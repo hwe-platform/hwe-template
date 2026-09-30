@@ -1,5 +1,7 @@
 import { BUSINESS_TYPES } from '@hwe-platform/core-ui';
 
+import { DEFAULT_LOCALE, LOCALES } from '../i18n';
+
 import type { Field } from 'payload';
 
 /** Identidad del site. `siteName` no se localiza: es el nombre propio del cliente. */
@@ -70,6 +72,10 @@ export const locationGroup: Field = {
  * Idiomas del site. Debe mantenerse en sincronía con `localization.locales`
  * del payload.config — este grupo es lo que lee el middleware de Next.js para
  * decidir prefijos y dominios (ver hwe-tools/docs/arquitectura/paginas-routing.md).
+ *
+ * Los valores por defecto salen de `i18n.ts`: un site recién creado arranca con
+ * sus idiomas ya puestos en vez de un campo vacío que el editor tendría que
+ * rellenar a mano, código a código.
  */
 export const languagesGroup: Field = {
   name: 'languages',
@@ -81,9 +87,10 @@ export const languagesGroup: Field = {
       type: 'text',
       hasMany: true,
       required: true,
+      defaultValue: [...LOCALES],
       admin: { description: 'Códigos de idioma: fr, en, es.' },
     },
-    { name: 'default', type: 'text', required: true, defaultValue: 'fr' },
+    { name: 'default', type: 'text', required: true, defaultValue: DEFAULT_LOCALE },
     {
       name: 'prefixDefault',
       type: 'checkbox',
