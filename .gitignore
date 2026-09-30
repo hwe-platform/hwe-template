@@ -1,0 +1,14 @@
+node_modules
+coverage
+.next
+*.tsbuildinfo
+*.log
+.DS_Store
+
+# Variables de entorno: nunca se versionan. La plantilla es .env.example.
+.env
+.env.local
+
+# Archivos subidos desde el panel: son contenido del cliente, no código.
+# En producción viven en un storage externo; en local, aquí.
+/media

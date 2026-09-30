@@ -1,0 +1,132 @@
+/**
+ * Overrides de marca sobre el CSS de Mastercamping
+ * (`master_booking_plugin.min.css`, cargado por el adapter) —
+ * hwe-tools/specs/reservas/motores/mastercamping/index.md, "CSS overrides" y
+ * "Estructura HTML real (buscador)". Clases y anidamiento verificados
+ * contra un `outerHTML` real copiado de DevTools sobre el widget montado
+ * (no solo contra el JS/CSS del vendor ni los 4 ejemplos HTML de
+ * integración, que no traen marcado interno) — solo aplica via
+ * `[data-engine="mastercamping"]`.
+ *
+ * Quirk importante confirmado en ese HTML real: `MasterWidget` NO crea un
+ * wrapper hijo nuevo — decora con sus propias clases (`widgetBookingContainer`,
+ * `widget_columns`) el mismo `<div>` contenedor que le pasa el adapter, que es
+ * el que ya lleva `data-engine="mastercamping"` (ver `idDeContenedor()` en
+ * `mastercamping.ts`). Es decir, `[data-engine="mastercamping"]` y
+ * `.widgetBookingContainer` son **el mismo elemento**, no ancestro/descendiente
+ * — cualquier regla para el panel raíz necesita un selector compuesto sin
+ * espacio (`[data-engine="mastercamping"].widgetBookingContainer`), nunca
+ * `[data-engine="mastercamping"] .widgetBookingContainer` (ese nunca casa).
+ *
+ * Mismo estilo de partida que thr-overrides.css, todo por tokens del tema
+ * (labels en mayúscula con tracking, botón de búsqueda
+ * bg-primary/text-primary-foreground redondeado): cada site lo ajusta a su
+ * diseño. Mastercamping solo ofrece el buscador — no hay favoritos ni
+ * simpleblock que calcar (ver "Widgets disponibles" en la spec).
+ */
+
+/* Panel contenedor — quita el gris plano por defecto del vendor
+   (`.widgetBookingContainer{background:#e6e6e6}` en
+   master_booking_plugin.min.css) por un panel de tarjeta (`bg-card
+   rounded-lg border border-border shadow-sm`). Selector compuesto (sin espacio): es el mismo
+   elemento que lleva `data-engine`, no un descendiente — ver nota arriba. */
+[data-engine='mastercamping'].widgetBookingContainer {
+  font-family: var(--font-body) !important;
+  background: var(--color-card) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+  color: var(--color-foreground) !important;
+}
+
+/* Etiquetas de campo (check-in/out, adultos, niños, personas) — mismo
+   color que el resto de labels del site, no el negro por defecto del
+   vendor (`.widgetBookingContainer .checkinCheckoutContainer label{...}`
+   en master_booking_plugin.min.css no fija color, hereda #000) */
+[data-engine='mastercamping'] .checkinCheckoutContainer label,
+[data-engine='mastercamping'] .checkinLabel,
+[data-engine='mastercamping'] .checkoutLabel,
+[data-engine='mastercamping'] .adultsContainer label,
+[data-engine='mastercamping'] .childsContainer label,
+[data-engine='mastercamping'] .peopleContainer label {
+  font-family: var(--font-body) !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.2px !important;
+  color: var(--color-secondary) !important;
+}
+
+/* Inputs (categoría, fechas, combo de adultos/niños) y select nativo. El
+   HTML real confirma que la caja visible SIEMPRE es `span.inputBox` — el
+   wrapper (`.categorySelector`, `.datePicker`, `.comboBox`) no pinta fondo
+   ni borde propios, así que un selector sobre `.comboBox` a secas (versión
+   anterior de este fichero) no llegaba a nada visible. */
+[data-engine='mastercamping'] span.inputBox,
+[data-engine='mastercamping'] select {
+  font-family: var(--font-body) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: none !important;
+  color: var(--color-foreground) !important;
+}
+
+/* Icono de calendario y flechas de combo (`content:'\e900'`/`'\0025BC'` via
+   :after) — el vendor los pinta negros (`{color:#000}`, mismo selector
+   agrupado en su CSS); se recolorean a la vez con el mismo selector real. */
+[data-engine='mastercamping'] .datePicker span.inputBox:after,
+[data-engine='mastercamping'] .categorySelector > span:after,
+[data-engine='mastercamping'] .peopleContainer .comboBox:after {
+  color: var(--color-primary) !important;
+}
+
+/* Checkbox de grupo de categoría — tinte de marca en vez del azul nativo */
+[data-engine='mastercamping'] .categoryGroupCB {
+  accent-color: var(--color-primary) !important;
+}
+
+/* Bloque de servicios/instalaciones — no aplica a todos los sites, se oculta
+   hasta que un cliente concreto lo necesite (activar quitando esta regla) */
+[data-engine='mastercamping'] .facilities {
+  display: none !important;
+}
+
+/* Selector de edades de niños */
+[data-engine='mastercamping'] .peopleContainer .childAgeGroupContainer {
+  font-family: var(--font-body) !important;
+  color: var(--color-foreground) !important;
+}
+
+/* Popups (selector de fechas, categorías) */
+[data-engine='mastercamping'] .popupTitle {
+  font-family: var(--font-body) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.2px !important;
+  color: var(--color-primary-foreground) !important;
+  background: var(--color-primary) !important;
+}
+[data-engine='mastercamping'] .datePickerPopup .month_title {
+  font-family: var(--font-heading) !important;
+  color: var(--color-foreground) !important;
+}
+[data-engine='mastercamping'] .categoriesPopup .closeButton {
+  color: var(--color-muted-foreground) !important;
+}
+
+/* Botón de búsqueda — mismo aspecto que el botón primario del site. Gana al
+   default del vendor (`.searchButton{background:rgba(0,0,0,.6)}`), que es
+   de baja especificidad. */
+[data-engine='mastercamping'] button.searchButton {
+  font-family: var(--font-body) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.2px !important;
+  color: var(--color-primary-foreground) !important;
+  background-color: var(--color-primary) !important;
+  border: none !important;
+  border-radius: var(--radius-md) !important;
+}
+[data-engine='mastercamping'] button.searchButton:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 85%, black) !important;
+}
