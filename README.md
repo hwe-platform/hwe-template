@@ -21,16 +21,24 @@ pone su marca, sus iconos y su contenido encima.
 1. Crea el repo del cliente desde este template («Use this template» en GitHub)
    y clónalo.
 
-2. Exporta el token para que pnpm pueda descargar `@hwe-platform/core-ui`
-   (`.npmrc` lo lee de la variable, nunca se escribe en el repo):
+2. Pon el token para que pnpm pueda descargar `@hwe-platform/core-ui`
+   (`.npmrc` lo lee de la variable, nunca se escribe en el repo) e instala:
 
    ```bash
    export NODE_AUTH_TOKEN=ghp_...        # PowerShell: $env:NODE_AUTH_TOKEN = 'ghp_...'
-   pnpm install
+   pnpm install                          # cmd: set NODE_AUTH_TOKEN=ghp_...
    ```
 
-   La primera instalación genera `pnpm-lock.yaml`: comitéalo, fija las versiones
-   exactas del site.
+   Para no repetirlo en cada terminal, guárdalo como variable de usuario de
+   Windows con `setx NODE_AUTH_TOKEN ghp_...`: lo heredan las terminales que abras
+   después. Si `pnpm` no se reconoce, `corepack pnpm install`.
+
+   Cómo crear el token, y qué hacer si la instalación falla:
+   [core-ui en los sites](https://github.com/hwe-platform/hwe-tools/blob/main/docs/guias/core-ui-en-los-sites.md)
+   en hwe-tools.
+
+   El template trae su `pnpm-lock.yaml`, que fija las versiones exactas: se
+   comitea con cada cambio de dependencias.
 
 3. Copia `.env.example` a `.env` y rellena las obligatorias:
 
@@ -110,7 +118,9 @@ la migración con `pnpm migrate:create <nombre>` y comitéala junto al cambio.
 ## Actualizar `@hwe-platform/core-ui`
 
 `package.json` declara el rango (`^0.x`) y `pnpm-lock.yaml` fija la versión
-exacta que usa el site. Para subirla:
+exacta que usa el site. Un cambio de core-ui solo llega aquí si en hwe-core se
+subió su `version`: la CI se salta sin avisar las versiones ya publicadas (ver
+la guía enlazada arriba). Para subirla:
 
 ```bash
 pnpm update @hwe-platform/core-ui --latest
