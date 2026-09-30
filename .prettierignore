@@ -1,0 +1,15 @@
+node_modules
+coverage
+.next
+/media
+pnpm-lock.yaml
+
+# Archivos generados: Payload reescribe payload-types.ts e importMap.js en
+# cada `generate:*`, y Next.js reescribe next-env.d.ts en cada build
+src/payload-types.ts
+src/app/(payload)/admin/importMap.js
+next-env.d.ts
+
+# Migrations de Payload: las genera `payload migrate:create` y el snapshot
+# .json se reescribe entero en cada una, así que formatearlas no aporta nada
+src/migrations/

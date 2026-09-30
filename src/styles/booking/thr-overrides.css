@@ -1,0 +1,254 @@
+/**
+ * Overrides de marca sobre el CSS de THR (AngularJS legacy, Font Awesome,
+ * Google Fonts, Slick Slider daterangepicker) — hwe-tools/specs/reservas/motores/thr/index.md,
+ * "CSS overrides". Clases reales verificadas contra un widget en producción
+ * (THR no las documenta) — solo aplica via `[data-engine="thr"]`.
+ *
+ * Estilo de partida, todo por tokens del tema (labels en mayúscula con
+ * tracking, precio en font-heading, botón de reserva
+ * bg-primary/text-primary-foreground redondeado); cada site lo ajusta a su
+ * diseño. THR controla el marcado interno del widget, así que el override es
+ * de tipografía/color/radio, no de estructura (ver "Principios inamovibles", hwe-tools/specs/reservas/index.md).
+ */
+
+/* ---- Buscador (<thr-search-engine>) ---- */
+
+/* Etiquetas de campo (regiones/fechas/tipo/personas/código promo) */
+[data-engine='thr'] .form-group label {
+  font-family: var(--font-body) !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.2px !important;
+  color: var(--color-muted-foreground) !important;
+}
+
+/* Inputs / selects a medida / rango de fechas */
+[data-engine='thr'] .thr-select,
+[data-engine='thr'] .thr-range-picker,
+[data-engine='thr'] .form-control {
+  font-family: var(--font-body) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: none !important;
+  color: var(--color-foreground) !important;
+}
+[data-engine='thr'] .thr-select.thr-focus,
+[data-engine='thr'] .thr-select:focus,
+[data-engine='thr'] .thr-range-picker:focus,
+[data-engine='thr'] .form-control:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 40%, transparent) !important;
+}
+
+/* Dropdown de los selects a medida */
+[data-engine='thr'] .thr-select-options {
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.08) !important;
+}
+[data-engine='thr'] .thr-select-option-selected {
+  background-color: var(--color-secondary) !important;
+  color: var(--color-primary) !important;
+}
+
+/* Botón de búsqueda. THR aplica su tema de cuenta (color1/color2) con
+   !important, así que se encadena una clase extra para ganar especificidad,
+   igual que hace el propio vendor. */
+[data-engine='thr'] .btn.btn-primary,
+[data-engine='thr'] .thr-btn-search {
+  font-family: var(--font-body) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.2px !important;
+  color: var(--color-primary-foreground) !important;
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  border-radius: var(--radius-md) !important;
+}
+[data-engine='thr'] .btn.btn-primary:hover,
+[data-engine='thr'] .btn.btn-primary:focus,
+[data-engine='thr'] .thr-btn-search:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 85%, black) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 85%, black) !important;
+}
+
+/* ---- Favoritos (<thr-favorites>) ---- */
+
+/* Título de la categoría */
+[data-engine='thr']
+  .thr-favorites
+  .thr-favorite
+  .thr-favorite-content
+  .thr-favorite-content-category {
+  font-family: var(--font-heading) !important;
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+  color: var(--color-foreground) !important;
+}
+
+/* Periodo / fechas */
+[data-engine='thr'] .thr-favorites .thr-favorite .thr-favorite-period,
+[data-engine='thr'] .thr-favorites .thr-favorite .thr-favorite-period p span {
+  font-family: var(--font-body) !important;
+  font-size: 0.875rem !important;
+  color: var(--color-muted-foreground) !important;
+}
+
+/* Precio */
+[data-engine='thr'] .thr-favorites .thr-favorite .thr-favorite-price .thr-color-primary,
+[data-engine='thr'] .thr-favorites .thr-favorite .thr-favorite-price.thr-color-primary {
+  font-family: var(--font-heading) !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: var(--color-primary) !important;
+}
+
+/* Botón de reserva — hereda el estilo del botón de búsqueda, a menor escala */
+[data-engine='thr'] .thr-favorites .thr-favorite .thr-box-footer .btn.btn-primary {
+  font-size: 0.75rem !important;
+  padding: 0.5rem 1rem !important;
+}
+
+/* Flechas del carrusel — círculos, excepción deliberada al estilo general
+   cuadrado del site (ver "Decisiones de diseño visual" en la spec) */
+[data-engine='thr'] .thr-favorites .slick-slider .slick-prev,
+[data-engine='thr'] .thr-favorites .slick-slider .slick-next {
+  top: 50% !important;
+  bottom: auto !important;
+  transform: translateY(-50%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 2.75rem !important;
+  height: 2.75rem !important;
+  border-radius: 9999px !important;
+  background-color: transparent !important;
+}
+[data-engine='thr'] .thr-favorites .slick-slider .slick-prev:hover,
+[data-engine='thr'] .thr-favorites .slick-slider .slick-next:hover {
+  background-color: var(--color-secondary) !important;
+}
+[data-engine='thr'] .thr-favorites .slick-slider .slick-prev:before,
+[data-engine='thr'] .thr-favorites .slick-slider .slick-next:before {
+  color: var(--color-primary) !important;
+  font-size: 1.25rem !important;
+}
+
+/* Puntos de paginación */
+[data-engine='thr'] .thr-favorites .slick-dots li button {
+  border-color: var(--color-primary) !important;
+  background: transparent !important;
+}
+[data-engine='thr'] .thr-favorites .slick-dots li.slick-active button {
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+
+/* ---- Disponibilidad rápida (<thr-simpleblock>) ---- */
+
+/* Etiquetas de campo del buscador interno (mes/duración/llegada) */
+[data-engine='thr'] .thr-simpleblock .thr-simpleblock-engine-label,
+[data-engine='thr'] .thr-simpleblock .thr-simpleblock-engine-inputs > * > span {
+  font-family: var(--font-body) !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.2px !important;
+  color: var(--color-muted-foreground) !important;
+}
+
+/* Pestañas de mes — mes activo relleno de marca, resto en gris, esquinas
+   redondeadas arriba (calco directo de BookingWidget.tsx, "month header tabs") */
+[data-engine='thr'] .thr-simpleblock .thr-simpleblock-months .thr-simpleblock-month {
+  font-family: var(--font-body) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.2px !important;
+  color: var(--color-primary-foreground) !important;
+  background-color: var(--color-muted-foreground) !important;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
+}
+[data-engine='thr'] .thr-simpleblock .thr-simpleblock-months .thr-simpleblock-month:hover {
+  background-color: color-mix(in srgb, var(--color-muted-foreground) 85%, black) !important;
+}
+[data-engine='thr']
+  .thr-simpleblock
+  .thr-simpleblock-months
+  .thr-simpleblock-month.thr-simpleblock-month-current {
+  background-color: var(--color-primary) !important;
+}
+
+/* Nombre del alojamiento — overlay sobre la foto */
+[data-engine='thr'] .thr-simpleblock .thr-simpleblock-category .thr-simpleblock-category-name {
+  font-family: var(--font-body) !important;
+  font-weight: 600 !important;
+  color: var(--color-primary-foreground) !important;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-primary) 90%, transparent),
+    transparent
+  ) !important;
+}
+
+/* Cabeceras de columna (categoría / periodo) */
+[data-engine='thr']
+  .thr-simpleblock
+  .thr-simpleblock-results
+  .thr-simpleblock-row.thr-simpleblock-headers
+  .thr-simpleblock-category {
+  font-family: var(--font-body) !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.2px !important;
+  color: var(--color-muted-foreground) !important;
+}
+[data-engine='thr']
+  .thr-simpleblock
+  .thr-simpleblock-results
+  .thr-simpleblock-row.thr-simpleblock-headers
+  .thr-simpleblock-stay
+  > div
+  > div {
+  font-family: var(--font-body) !important;
+  font-weight: 600 !important;
+  color: var(--color-foreground) !important;
+}
+
+/* Precio — calco de "A partir de / precio tachado / precio", en font-heading */
+[data-engine='thr'] .thr-simpleblock .thr-simpleblock-stay-price-container .thr-simpleblock-price {
+  font-family: var(--font-heading) !important;
+  font-weight: 700 !important;
+  color: var(--color-foreground) !important;
+}
+[data-engine='thr']
+  .thr-simpleblock
+  .thr-simpleblock-stay-price-container
+  .thr-simpleblock-striked-price {
+  font-family: var(--font-body) !important;
+  color: var(--color-muted-foreground) !important;
+}
+
+/* Botón de reserva — <button> suelto con fa-shopping-cart, NO .btn.btn-primary
+   (ver "CSS overrides" en la spec: necesita su propio override) */
+[data-engine='thr']
+  .thr-simpleblock
+  .thr-simpleblock-stay-price-container:not(.thr-simpleblock-stay-unavailable)
+  button {
+  font-family: var(--font-body) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.2px !important;
+  color: var(--color-primary-foreground) !important;
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  border-radius: var(--radius-md) !important;
+}
+[data-engine='thr']
+  .thr-simpleblock
+  .thr-simpleblock-stay-price-container:not(.thr-simpleblock-stay-unavailable)
+  button:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 85%, black) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 85%, black) !important;
+}
