@@ -1,6 +1,7 @@
 import { BUSINESS_TYPES } from '@hwe-platform/core-ui';
 
 import { DEFAULT_LOCALE, LOCALES } from '../i18n';
+import { ADMIN_DECIMAL } from '../admin/decimal-field';
 
 import type { Field } from 'payload';
 
@@ -54,8 +55,8 @@ export const locationGroup: Field = {
   type: 'group',
   label: 'Ubicación',
   fields: [
-    { name: 'latitude', type: 'number', required: true },
-    { name: 'longitude', type: 'number', required: true },
+    { name: 'latitude', type: 'number', required: true, admin: ADMIN_DECIMAL },
+    { name: 'longitude', type: 'number', required: true, admin: ADMIN_DECIMAL },
     {
       name: 'transport',
       type: 'array',

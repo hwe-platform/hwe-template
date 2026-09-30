@@ -1,3 +1,4 @@
+import { ADMIN_DECIMAL } from '../admin/decimal-field';
 import { iconField } from './icons';
 
 import type { Field } from 'payload';
@@ -10,7 +11,12 @@ export const specsGroup: Field = {
   fields: [
     { name: 'capacity', type: 'number', required: true, admin: { description: 'Personas.' } },
     { name: 'bedrooms', type: 'number', required: true },
-    { name: 'surface', type: 'number', required: true, admin: { description: 'En m².' } },
+    {
+      name: 'surface',
+      type: 'number',
+      required: true,
+      admin: { ...ADMIN_DECIMAL, description: 'En m².' },
+    },
     { name: 'hasAC', type: 'checkbox', defaultValue: false, label: 'Aire acondicionado' },
     { name: 'petFriendly', type: 'checkbox', defaultValue: false, label: 'Admite mascotas' },
   ],
@@ -22,7 +28,11 @@ export const pricingGroup: Field = {
   type: 'group',
   label: 'Precio',
   fields: [
-    { name: 'from', type: 'number', admin: { description: 'Precio "desde". Opcional.' } },
+    {
+      name: 'from',
+      type: 'number',
+      admin: { ...ADMIN_DECIMAL, description: 'Precio "desde". Opcional.' },
+    },
     { name: 'currency', type: 'text', defaultValue: 'EUR' },
     {
       name: 'priceNote',
