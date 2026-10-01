@@ -14,6 +14,7 @@ import { Entities } from './collections/Entities';
 import { Pages } from './collections/Pages';
 import { ContactSubmissions } from './collections/ContactSubmissions';
 import { emailAdapter } from './email';
+import { storagePlugins } from './storage';
 import { SiteConfig } from './globals/SiteConfig';
 import { Header } from './globals/Header';
 import { Footer } from './globals/Footer';
@@ -35,6 +36,12 @@ export default buildConfig({
     user: Users.slug,
     importMap: {
       baseDir: path.resolve(dirname),
+      // Payload lo regeneraría solo en desarrollo, y sin `BLOB_READ_WRITE_TOKEN` (lo
+      // normal en local) el adapter de Blob no está en el config: cada cambio en un
+      // fichero de la configuración borraría del `importMap` el manejador de subida
+      // directa, y al comitearlo los ficheros pesados volverían a cortarse en 4,5 MB
+      // en producción. Se regenera a mano: ver el README.
+      autoGenerate: false,
     },
   },
   collections: [
@@ -50,6 +57,8 @@ export default buildConfig({
   globals: [SiteConfig, Header, Footer, Banner],
   // SMTP solo con `SMTP_HOST`; sin él, Payload escribe los emails en consola.
   email: emailAdapter(),
+  // Vercel Blob solo con `BLOB_READ_WRITE_TOKEN`; sin él, `media` va a disco (DEC-010).
+  plugins: storagePlugins(),
   // Localización por campo, no por documento: un alojamiento es UN documento
   // con los campos de texto traducidos (specs/payload/localizacion.md).
   // Tres idiomas de partida; cada cliente configura los suyos, los mantiene a

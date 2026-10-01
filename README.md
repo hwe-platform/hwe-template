@@ -51,7 +51,7 @@ pone su marca, sus iconos y su contenido encima.
    | `DATABASE_URI`           | Conexión a Postgres. Una base de datos propia por site                        |
    | `PAYLOAD_SECRET`         | Secreto para firmar los JWT de Payload. Uno distinto por entorno              |
    | `NEXT_PUBLIC_SERVER_URL` | URL pública sin barra final (`http://localhost:3000` en local)                |
-   | `BLOB_READ_WRITE_TOKEN`  | Opcional. Storage de media en producción; el adapter llega con el deploy      |
+   | `BLOB_READ_WRITE_TOKEN`  | Opcional. Con ella, `media` va a Vercel Blob; sin ella, a `./media` (DEC-010) |
    | `SMTP_*`                 | Opcionales. Sin `SMTP_HOST`, los emails del formulario se escriben en consola |
 
    Para generar `PAYLOAD_SECRET`:
@@ -81,21 +81,41 @@ pone su marca, sus iconos y su contenido encima.
 
 ## Comandos
 
-| Comando                   | Qué hace                                                            |
-| ------------------------- | ------------------------------------------------------------------- |
-| `pnpm dev`                | Next.js en modo desarrollo                                          |
-| `pnpm build`              | Build de producción                                                 |
-| `pnpm lint`               | ESLint                                                              |
-| `pnpm format:check`       | Comprueba el formato con Prettier (`pnpm format` lo aplica)         |
-| `pnpm typecheck`          | TypeScript sin emitir                                               |
-| `pnpm test`               | Vitest (`pnpm test:coverage` con los umbrales de cobertura)         |
-| `pnpm migrate`            | Aplica las migraciones pendientes                                   |
-| `pnpm migrate:create <n>` | Genera una migración a partir de los cambios de colecciones/globals |
-| `pnpm generate:types`     | Regenera `src/payload-types.ts`                                     |
-| `pnpm generate:importmap` | Regenera `src/app/(payload)/admin/importMap.js`                     |
+| Comando                   | Qué hace                                                                                               |
+| ------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `pnpm dev`                | Next.js en modo desarrollo                                                                             |
+| `pnpm build`              | Build de producción                                                                                    |
+| `pnpm lint`               | ESLint                                                                                                 |
+| `pnpm format:check`       | Comprueba el formato con Prettier (`pnpm format` lo aplica)                                            |
+| `pnpm typecheck`          | TypeScript sin emitir                                                                                  |
+| `pnpm test`               | Vitest (`pnpm test:coverage` con los umbrales de cobertura)                                            |
+| `pnpm migrate`            | Aplica las migraciones pendientes                                                                      |
+| `pnpm migrate:create <n>` | Genera una migración a partir de los cambios de colecciones/globals                                    |
+| `pnpm generate:types`     | Regenera `src/payload-types.ts`                                                                        |
+| `pnpm generate:importmap` | Regenera `src/app/(payload)/admin/importMap.js`, a mano y con token de relleno (ver el aviso de abajo) |
 
 Antes de entregar un cambio:
 `pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build`.
+
+> **`generate:importmap` necesita un token de relleno, y es manual.** El adapter de
+> Vercel Blob solo está en el config cuando hay `BLOB_READ_WRITE_TOKEN`, y sin él
+> el `importMap` pierde el manejador de subida directa a Blob: en producción, los
+> ficheros pesados volverían a pasar por el servidor y Vercel los corta en 4,5 MB.
+>
+> Por eso Payload **no lo regenera solo** (`admin.importMap.autoGenerate: false` en
+> `payload.config.ts`): en desarrollo, y sin token, cada cambio en un fichero de la
+> configuración se lo habría llevado. La consecuencia es que, **al añadir o quitar un
+> componente del panel** (un campo o una vista propios), hay que regenerarlo a mano.
+> Genéralo siempre así (y comitea el resultado):
+>
+> ```bash
+> BLOB_READ_WRITE_TOKEN=vercel_blob_rw_local_dummy pnpm generate:importmap
+> # cmd:        set "BLOB_READ_WRITE_TOKEN=vercel_blob_rw_local_dummy" && pnpm generate:importmap
+> # PowerShell: $env:BLOB_READ_WRITE_TOKEN='vercel_blob_rw_local_dummy'; pnpm generate:importmap
+> ```
+>
+> El token no sale a ningún sitio: solo hace que el plugin figure en la config.
+> Un test (`src/storage.test.ts`) falla si el manejador falta del `importMap`.
 
 ## Personalizar el site
 
