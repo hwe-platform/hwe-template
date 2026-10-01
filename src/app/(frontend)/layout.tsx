@@ -1,15 +1,17 @@
 import { Inter } from 'next/font/google';
 import { headers } from 'next/headers';
 import { getPayload } from 'payload';
-import { BookingProvider, SiteLayout } from '@hwe-platform/core-ui';
+import { BookingProvider, SiteLayout, robotsDirective } from '@hwe-platform/core-ui';
 import type React from 'react';
 
 import config from '../../payload.config';
 import { DEFAULT_LOCALE, LOCALE_HEADER, isSiteLocale } from '../../i18n';
+import { leerIndexacion } from '../../services/seo/indexacion';
 
 import '../../styles/globals.css';
 
 import type { SiteGlobals } from '@hwe-platform/core-ui';
+import type { Metadata } from 'next';
 import type { SiteLocale } from '../../i18n';
 
 // Fuente neutra de partida para titulares y texto (ver styles/theme.css). Cada
@@ -62,6 +64,15 @@ async function loadGlobals(locale: SiteLocale): Promise<SiteGlobals | null> {
   } catch {
     return null;
   }
+}
+
+/**
+ * Directiva `robots` de todo el frontend (HU-026). Con el site cerrado, ninguna
+ * página —tampoco el 404— sale sin `noindex, nofollow`. La página puede añadir
+ * `noindex` por su cuenta cuando el site está abierto.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  return { robots: robotsDirective({ indexing: await leerIndexacion() }) };
 }
 
 export default async function RootLayout({ children }: Args) {

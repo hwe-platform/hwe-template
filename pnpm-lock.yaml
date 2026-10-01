@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@hwe-platform/core-ui':
-        specifier: ^0.4.0
-        version: 0.4.0(next@16.2.6(@babel/core@7.29.7)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.77.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^0.5.0
+        version: 0.5.0(next@16.2.6(@babel/core@7.29.7)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.77.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@payloadcms/db-postgres':
         specifier: 3.88.0
         version: 3.88.0(payload@3.88.0(graphql@16.14.2)(typescript@5.9.3))
@@ -993,8 +993,8 @@ packages:
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
 
-  '@hwe-platform/core-ui@0.4.0':
-    resolution: {integrity: sha512-+qacupdJMiBPCVuhulhm3GjAxgGzT0DMR1I546JXm6cMyW0Jm/ELBOwhIu3GYNkbTuHL5tKPMc+H9lpcDi6Lsw==, tarball: https://npm.pkg.github.com/download/@hwe-platform/core-ui/0.4.0/46fa845ff9cd61f977228a9c9f0b23a1e5aa77cb}
+  '@hwe-platform/core-ui@0.5.0':
+    resolution: {integrity: sha512-AjYtzrOua4ZgDR+0D+flDEN4774cOq9ElgNpdqirdnY8nPUBWnZUu82UM24rnNpB7bO4/gxUjGMIZRGtVWkT1Q==, tarball: https://npm.pkg.github.com/download/@hwe-platform/core-ui/0.5.0/e2495e34b0c04ac9d370a5e7da5393ed4c1a9b73}
     peerDependencies:
       next: ^16.0.0
       react: ^19.0.0
@@ -5359,7 +5359,7 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.3': {}
 
-  '@hwe-platform/core-ui@0.4.0(next@16.2.6(@babel/core@7.29.7)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.77.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@hwe-platform/core-ui@0.5.0(next@16.2.6(@babel/core@7.29.7)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.77.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       class-variance-authority: 0.7.1
       leaflet: 1.9.4

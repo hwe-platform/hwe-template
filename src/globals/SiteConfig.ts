@@ -1,4 +1,4 @@
-import { siteConfigUpdateSchema } from '@hwe-platform/core-ui';
+import { INDEXING_MODES, siteConfigUpdateSchema } from '@hwe-platform/core-ui';
 
 import { publicRead, authenticatedOnly } from '../access';
 import {
@@ -34,6 +34,26 @@ export const SiteConfig: GlobalConfig = {
     afterChange: [revalidateGlobal],
   },
   fields: [
+    {
+      name: 'indexing',
+      type: 'select',
+      label: 'Indexación en buscadores',
+      required: true,
+      defaultValue: 'noindex',
+      // Los valores salen del enum de core-ui: si divergen, falla el test de paridad.
+      options: [
+        { label: 'Cerrado — noindex (ningún buscador indexa el site)', value: INDEXING_MODES[0] },
+        {
+          label: 'Abierto — index (cada página decide con su «noIndex»)',
+          value: INDEXING_MODES[1],
+        },
+      ],
+      admin: {
+        position: 'sidebar',
+        description:
+          'Todo site nace cerrado. Mientras esté en «Cerrado», todas las páginas salen con noindex, robots.txt lo bloquea todo y el sitemap queda vacío, diga lo que diga cada página. Cámbialo a «Abierto» solo cuando el cliente decida publicar.',
+      },
+    },
     generalGroup,
     contactGroup,
     locationGroup,
