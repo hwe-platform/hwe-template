@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { getPayload } from 'payload';
-import { resolveRoute } from '@hwe-platform/core-ui';
+import { resolveRoute, robotsDirective } from '@hwe-platform/core-ui';
 
 import config from '../../../payload.config';
 import { AccommodationDetail } from '../../../components/AccommodationDetail';
@@ -10,7 +10,7 @@ import { PlaceholderTemplate } from '../../../components/PlaceholderTemplate';
 import { DEFAULT_LOCALE, LOCALE_HEADER, PREFIX_DEFAULT_LOCALE, isSiteLocale } from '../../../i18n';
 import { buildPageJsonLd, serializeJsonLd } from '../../../services/json-ld';
 import { buscarDocumento } from '../../../services/routing/buscar-documento';
-import { robotsDe } from '../../../services/seo/robots';
+import { leerIndexacion } from '../../../services/seo/indexacion';
 
 import type { ComponentType } from 'react';
 import type { Breadcrumb, RoutableCollection } from '@hwe-platform/core-ui';
@@ -200,7 +200,9 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
     { metaTitle?: string; metaDescription?: string; noIndex?: boolean | null } | undefined;
   const title = seo?.metaTitle ?? (resolved.doc.title as string) ?? (resolved.doc.name as string);
 
-  return { title, description: seo?.metaDescription, robots: robotsDe(seo) };
+  const robots = robotsDirective({ indexing: await leerIndexacion(), pageNoIndex: seo?.noIndex });
+
+  return { title, description: seo?.metaDescription, robots };
 }
 
 /**

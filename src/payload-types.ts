@@ -2737,6 +2737,10 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface SiteConfig {
   id: number;
+  /**
+   * Todo site nace cerrado. Mientras esté en «Cerrado», todas las páginas salen con noindex, robots.txt lo bloquea todo y el sitemap queda vacío, diga lo que diga cada página. Cámbialo a «Abierto» solo cuando el cliente decida publicar.
+   */
+  indexing: 'noindex' | 'index';
   general: {
     siteName: string;
     siteDescription: string;
@@ -3029,6 +3033,7 @@ export interface Banner {
  * via the `definition` "site-config_select".
  */
 export interface SiteConfigSelect<T extends boolean = true> {
+  indexing?: T;
   general?:
     | T
     | {
