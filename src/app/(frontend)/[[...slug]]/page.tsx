@@ -10,6 +10,7 @@ import { PlaceholderTemplate } from '../../../components/PlaceholderTemplate';
 import { DEFAULT_LOCALE, LOCALE_HEADER, PREFIX_DEFAULT_LOCALE, isSiteLocale } from '../../../i18n';
 import { buildPageJsonLd, serializeJsonLd } from '../../../services/json-ld';
 import { buscarDocumento } from '../../../services/routing/buscar-documento';
+import { robotsDe } from '../../../services/seo/robots';
 
 import type { ComponentType } from 'react';
 import type { Breadcrumb, RoutableCollection } from '@hwe-platform/core-ui';
@@ -195,10 +196,11 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const resolved = await findDocument(await params, await currentLocale());
   if (!resolved) return {};
 
-  const seo = resolved.doc.seo as { metaTitle?: string; metaDescription?: string } | undefined;
+  const seo = resolved.doc.seo as
+    { metaTitle?: string; metaDescription?: string; noIndex?: boolean | null } | undefined;
   const title = seo?.metaTitle ?? (resolved.doc.title as string) ?? (resolved.doc.name as string);
 
-  return { title, description: seo?.metaDescription };
+  return { title, description: seo?.metaDescription, robots: robotsDe(seo) };
 }
 
 /**
