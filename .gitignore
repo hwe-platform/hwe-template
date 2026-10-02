@@ -12,3 +12,6 @@ coverage
 # Archivos subidos desde el panel: son contenido del cliente, no código.
 # En producción viven en un storage externo; en local, aquí.
 /media
+
+# Pipeline de onboarding — datos temporales por cliente
+.onboarding/
