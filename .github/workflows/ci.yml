@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  ci:
+    name: Guarda del file:, lint, formato, test y build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Un core-ui local (`file:`/`link:`) en package.json o en el lockfile se
+      # mergea en verde y rompe el clon limpio y el deploy. Va primero: es la
+      # comprobación más barata y la que protege todo lo demás.
+      - name: Comprobar que core-ui no apunta a un enlace local
+        run: sh .github/scripts/comprobar-sin-file.sh
+
+      - name: Configurar pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+          registry-url: https://npm.pkg.github.com
+          scope: '@hwe-platform'
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Informativo: no bloquea. Las vulnerabilidades de Payload y Next se
+      # resuelven en la puerta de seguridad antes del primer deploy real.
+      - name: Auditar dependencias de producción (informativo)
+        run: pnpm audit --prod
+        continue-on-error: true
+
+      - name: Probar los hooks
+        run: pnpm probar:hooks
+
+      - name: Lint
+        run: pnpm lint
+        env:
+          CI: 'true'
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+        env:
+          # Dummy: payload.config.ts necesita estas variables presentes para
+          # importarse durante `next build`, pero nunca se usan para conectar
+          # de verdad (no hay Postgres en CI).
+          DATABASE_URI: 'postgres://dummy:dummy@localhost:5432/dummy'
+          PAYLOAD_SECRET: 'dummy-secret-for-ci-build-only'
