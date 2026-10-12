@@ -13,7 +13,7 @@ import {
   trackingGroup,
 } from '../fields/site-config-groups';
 import { contactFormGroup, mapsGroup } from '../fields/site-config-contact-groups';
-import { revalidateGlobal } from '../hooks/revalidate';
+import { revalidateGlobal, revalidateLlmsTxt } from '../hooks/revalidate';
 import { validateGlobalWrite } from '../hooks/validate';
 
 import type { GlobalConfig } from 'payload';
@@ -31,7 +31,7 @@ export const SiteConfig: GlobalConfig = {
   admin: { group: 'Configuración' },
   hooks: {
     beforeChange: [validateGlobalWrite(siteConfigUpdateSchema, 'site-config')],
-    afterChange: [revalidateGlobal],
+    afterChange: [revalidateGlobal, revalidateLlmsTxt],
   },
   fields: [
     {

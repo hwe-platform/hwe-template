@@ -1,6 +1,11 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 
-import { hayCacheDeNext, revalidateDocument, revalidateGlobal } from './revalidate';
+import {
+  hayCacheDeNext,
+  revalidateDocument,
+  revalidateGlobal,
+  revalidateLlmsTxt,
+} from './revalidate';
 
 import type { CollectionAfterChangeHook, GlobalAfterChangeHook } from 'payload';
 
@@ -56,6 +61,22 @@ describe('revalidateGlobal', () => {
     revalidateTag.mockClear();
     vi.stubEnv('NEXT_RUNTIME', '');
     await expect(revalidateGlobal(args)).resolves.toEqual({ a: 1 });
+    expect(revalidateTag).not.toHaveBeenCalled();
+  });
+});
+
+describe('revalidateLlmsTxt', () => {
+  it('invalida solo el tag de llms.txt dentro de Next y no hace nada fuera', async () => {
+    const args = { doc: { slug: 'contact' } };
+
+    vi.stubEnv('NEXT_RUNTIME', 'nodejs');
+    await expect(revalidateLlmsTxt(args)).resolves.toEqual({ slug: 'contact' });
+    expect(revalidateTag).toHaveBeenCalledTimes(1);
+    expect(revalidateTag).toHaveBeenCalledWith('llms-txt', 'max');
+
+    revalidateTag.mockClear();
+    vi.stubEnv('NEXT_RUNTIME', '');
+    await revalidateLlmsTxt(args);
     expect(revalidateTag).not.toHaveBeenCalled();
   });
 });

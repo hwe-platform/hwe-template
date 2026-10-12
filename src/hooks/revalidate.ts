@@ -56,6 +56,18 @@ export const revalidateDocument: CollectionAfterChangeHook = async ({ doc, colle
   return doc;
 };
 
+/** Tag de la caché de `/llms.txt` (HU-031). Lo etiqueta la ruta y lo invalida el hook. */
+export const LLMS_TXT_TAG = 'llms-txt';
+
+/**
+ * Invalida `/llms.txt`. Va en `pages`, `accommodations` y `site-config`, que son
+ * lo único de lo que depende el fichero; sirve igual de hook de colección que de global.
+ */
+export const revalidateLlmsTxt = async <T>({ doc }: { doc: T }): Promise<T> => {
+  await invalidar([LLMS_TXT_TAG]);
+  return doc;
+};
+
 /** Misma invalidación para un global, que no tiene slug propio. */
 export const revalidateGlobal: GlobalAfterChangeHook = async ({ doc, global }) => {
   await invalidar(revalidationTags({ collection: global.slug }));

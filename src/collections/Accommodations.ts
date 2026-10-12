@@ -14,7 +14,7 @@ import {
 import { blocksField } from '../fields/blocks';
 import { personalizationField } from '../fields/personalization';
 import { slugField } from '../fields/seo';
-import { revalidateDocument } from '../hooks/revalidate';
+import { revalidateDocument, revalidateLlmsTxt } from '../hooks/revalidate';
 import { slugFrom } from '../hooks/slug';
 import { validateWrite } from '../hooks/validate';
 
@@ -45,7 +45,7 @@ export const Accommodations: CollectionConfig = {
         label: 'accommodations',
       }),
     ],
-    afterChange: [revalidateDocument],
+    afterChange: [revalidateDocument, revalidateLlmsTxt],
   },
   fields: [
     { name: 'name', type: 'text', required: true, localized: true },
