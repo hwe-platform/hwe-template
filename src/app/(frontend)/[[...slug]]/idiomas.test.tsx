@@ -23,7 +23,7 @@ vi.mock('../../../services/seo/idiomas', async (original) => ({
   leerIdiomasActivos,
 }));
 
-import CatchAllPage from './page';
+import CatchAllPage, { generateMetadata } from './page';
 
 /** El middleware pone el idioma en una cabecera: así lo recibe la página. */
 function peticionEn(idioma: string) {
@@ -76,6 +76,14 @@ describe('catch-all: idiomas activos (V24)', () => {
     await expect(CatchAllPage({ params: Promise.resolve({}) })).rejects.toBeInstanceOf(
       NotFoundError,
     );
+    expect(find).not.toHaveBeenCalled();
+  });
+
+  it('generateMetadata tampoco consulta el contenido de un idioma inactivo', async () => {
+    leerIdiomasActivos.mockResolvedValue(['fr']);
+    peticionEn('de');
+
+    await expect(generateMetadata({ params: Promise.resolve({}) })).resolves.toEqual({});
     expect(find).not.toHaveBeenCalled();
   });
 });

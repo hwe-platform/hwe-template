@@ -3258,9 +3258,12 @@ export interface SiteConfig {
   };
   languages: {
     /**
-     * Códigos de idioma: fr, en, es.
+     * Idiomas que sirve el site. Códigos de la plataforma: ca, es, fr, en, de, nl, it, pt. Un idioma que no esté aquí da 404 y no sale en el sitemap.
      */
     available: string[];
+    /**
+     * Idioma principal. Tiene que estar entre los activos.
+     */
     default: string;
     /**
      * Si el idioma principal lleva prefijo en la URL.

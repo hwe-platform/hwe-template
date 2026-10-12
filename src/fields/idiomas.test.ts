@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { languagesGroup, validarPrincipalActivo } from './site-config-groups';
+import {
+  languagesGroup,
+  validarIdiomasActivos,
+  validarPrincipalActivo,
+} from './site-config-groups';
 
 describe('languages del site-config', () => {
   it('un site nuevo nace con solo el idioma principal activo', () => {
@@ -18,6 +22,28 @@ describe('languages del site-config', () => {
     for (const codigo of ['ca', 'es', 'fr', 'en', 'de', 'nl', 'it', 'pt']) {
       expect(descripcion).toContain(codigo);
     }
+  });
+});
+
+describe('validarIdiomasActivos', () => {
+  it('acepta códigos de la plataforma, en cualquier número y orden', () => {
+    expect(validarIdiomasActivos(['fr'])).toBe(true);
+    expect(validarIdiomasActivos(['pt', 'ca', 'fr'])).toBe(true);
+  });
+
+  it('rechaza un código que no es de la plataforma y dice cuál', () => {
+    const resultado = validarIdiomasActivos(['fr', 'xx']);
+    expect(resultado).toEqual(expect.stringContaining('xx'));
+  });
+
+  it('rechaza las variantes que parecen válidas: FR, pt-BR', () => {
+    expect(validarIdiomasActivos(['FR'])).toEqual(expect.any(String));
+    expect(validarIdiomasActivos(['pt-BR'])).toEqual(expect.any(String));
+  });
+
+  it('sin lista no hay nada que comprobar', () => {
+    expect(validarIdiomasActivos(undefined)).toBe(true);
+    expect(validarIdiomasActivos(null)).toBe(true);
   });
 });
 
