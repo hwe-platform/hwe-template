@@ -1,0 +1,23 @@
+# Payload y Next se suben JUNTOS: el peer de Payload exige un rango de Next, y
+# subir uno solo rompe la instalación. Estas PR avisan de vulnerabilidades; no
+# se mergean sin pasar antes por la puerta de seguridad (pnpm audit y las
+# migraciones sobre una copia de la BD).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: chore
+      include: scope
+    open-pull-requests-limit: 5
+    groups:
+      payload:
+        patterns:
+          - payload
+          - '@payloadcms/*'
+      next:
+        patterns:
+          - next
+          - eslint-config-next
