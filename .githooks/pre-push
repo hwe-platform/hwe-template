@@ -9,12 +9,16 @@ cero=0000000000000000000000000000000000000000
 while read -r _ref_local sha_local ref_remota sha_remota; do
   [ "$sha_local" = "$cero" ] && continue
   case "$ref_remota" in refs/heads/wip/*) continue ;; esac
+  # Lo que ya está en una rama remota cuenta como revisado, salvo wip/*:
+  # un commit malo guardado en wip/ no puede colarse después en otra rama.
+  nuevos() { git rev-list "$sha_local" --not --exclude="*/wip/*" --remotes; }
   if [ "$sha_remota" = "$cero" ]; then
-    # Lo que ya está en una rama remota cuenta como revisado, salvo wip/*:
-    # un commit malo guardado en wip/ no puede colarse después en otra rama.
-    commits=$(git rev-list "$sha_local" --not --exclude="*/wip/*" --remotes)
+    commits=$(nuevos)
   else
-    commits=$(git rev-list "$sha_remota..$sha_local")
+    # Si la rama remota avanzó y no se hizo fetch, su SHA no existe en local y el
+    # rango falla: se revisa entonces todo lo que ninguna rama remota tiene. Sin
+    # esto el push pasaba sin revisar nada.
+    commits=$(git rev-list "$sha_remota..$sha_local" 2>/dev/null) || commits=$(nuevos)
   fi
   for c in $commits; do
     for f in $FICHEROS_FILE; do
