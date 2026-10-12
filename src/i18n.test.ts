@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { splitLocale } from '@hwe-platform/core-ui';
 
@@ -15,6 +16,20 @@ describe('LOCALES', () => {
   it('el principal de partida es fr, aunque ca vaya primero en la lista', () => {
     expect(DEFAULT_LOCALE).toBe('fr');
     expect(LOCALES[0]).toBe('ca');
+  });
+});
+
+describe('paridad con payload.config.ts', () => {
+  // El importador de contenido valida `--locale` leyendo el config como texto (V13):
+  // esta lectura es la misma, así que si la lista deja de ser literal, falla aquí.
+  it('localization.locales lleva los mismos códigos que LOCALES, en el mismo orden', () => {
+    const fuente = readFileSync(new URL('./payload.config.ts', import.meta.url), 'utf8');
+    const bloque = /localization\s*:\s*\{[\s\S]*?locales\s*:\s*\[([\s\S]*?)\]/.exec(fuente);
+    const codigos = [...(bloque?.[1] ?? '').matchAll(/code\s*:\s*['"]([^'"]+)['"]/g)].map(
+      (m) => m[1],
+    );
+
+    expect(codigos).toEqual([...LOCALES]);
   });
 });
 

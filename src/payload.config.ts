@@ -14,7 +14,7 @@ import { Entities } from './collections/Entities';
 import { Pages } from './collections/Pages';
 import { ContactSubmissions } from './collections/ContactSubmissions';
 import { emailAdapter } from './email';
-import { DEFAULT_LOCALE, LOCALES, LOCALE_LABELS } from './i18n';
+import { DEFAULT_LOCALE } from './i18n';
 import { storagePlugins } from './storage';
 import { SiteConfig } from './globals/SiteConfig';
 import { Header } from './globals/Header';
@@ -62,12 +62,23 @@ export default buildConfig({
   plugins: storagePlugins(),
   // Localización por campo, no por documento: un alojamiento es UN documento
   // con los campos de texto traducidos (specs/payload/localizacion.md).
-  // Los 8 idiomas de la plataforma, a partir de `LOCALES` (i18n.ts), que es la
-  // única fuente. Es lo que Postgres acepta como locale (un enum): los idiomas
-  // que sirve cada site son `site-config.languages.available`, y nunca se quita
-  // un locale de aquí por desactivarlo. Añadir un idioma exige migration.
+  // Los 8 idiomas de la plataforma, en el orden de `LOCALES` (i18n.ts), con un
+  // test que comprueba que coinciden. La lista va literal y no derivada: el
+  // importador de contenido la lee como texto para validar `--locale` (V13). Es lo
+  // que Postgres acepta como locale (un enum): los idiomas que sirve cada site son
+  // `site-config.languages.available`, y nunca se quita un locale de aquí por
+  // desactivarlo. Añadir un idioma exige migration.
   localization: {
-    locales: LOCALES.map((code) => ({ label: LOCALE_LABELS[code], code })),
+    locales: [
+      { label: 'Català', code: 'ca' },
+      { label: 'Español', code: 'es' },
+      { label: 'Français', code: 'fr' },
+      { label: 'English', code: 'en' },
+      { label: 'Deutsch', code: 'de' },
+      { label: 'Nederlands', code: 'nl' },
+      { label: 'Italiano', code: 'it' },
+      { label: 'Português', code: 'pt' },
+    ],
     defaultLocale: DEFAULT_LOCALE,
     // Un visitante inglés ve el texto en francés antes que un hueco vacío.
     fallback: true,
