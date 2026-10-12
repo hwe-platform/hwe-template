@@ -25,6 +25,8 @@ export type IconFieldOptions = {
   name?: string;
   /** Si el editor está obligado a elegir uno. */
   required?: boolean;
+  /** Texto de ayuda bajo el campo, en el admin. */
+  description?: string;
 };
 
 /**
@@ -34,6 +36,16 @@ export type IconFieldOptions = {
  * sobre el resultado: el tipo `Field` de Payload es una unión discriminada y un
  * spread la rompe.
  */
-export function iconField({ name = 'icon', required = false }: IconFieldOptions = {}): Field {
-  return { name, type: 'select', options: iconOptions, required };
+export function iconField({
+  name = 'icon',
+  required = false,
+  description,
+}: IconFieldOptions = {}): Field {
+  return {
+    name,
+    type: 'select',
+    options: iconOptions,
+    required,
+    ...(description ? { admin: { description } } : {}),
+  };
 }

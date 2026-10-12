@@ -93,6 +93,11 @@ export const Footer: GlobalConfig = {
         { name: 'url', type: 'text' },
       ],
     },
-    { name: 'copyright', type: 'text', required: true, localized: true },
+    {
+      name: 'copyright',
+      type: 'text',
+      localized: true,
+      admin: { description: 'Opcional. Sin él, el pie pone «© {año} {nombre del site}».' },
+    },
   ],
 };

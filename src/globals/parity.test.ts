@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   compareFieldParity,
+  compareNestedFieldParity,
   compareOptionParity,
   siteConfigSchema,
   headerSchema,
@@ -44,6 +45,15 @@ describe('paridad entre los globals de Payload y los schemas Zod', () => {
     expect(result.missingInConfig, 'campos del schema que faltan en el config').toEqual([]);
     expect(result.missingInSchema, 'campos del config que faltan en el schema').toEqual([]);
   });
+
+  it.each(casos)(
+    'los campos de dentro de los grupos y arrays de $nombre coinciden con su schema',
+    ({ config, schema }) => {
+      expect(compareNestedFieldParity({ schema, fields: config.fields as ParityField[] })).toEqual(
+        [],
+      );
+    },
+  );
 
   // Los nombres de campo coincidían y las **opciones** de un `select` no: el
   // panel ofrecía un valor que el schema rechazaba, y el fallo solo aparecía al

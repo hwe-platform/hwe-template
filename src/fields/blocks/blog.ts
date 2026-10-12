@@ -1,4 +1,10 @@
-import { headingFields, headingToneField } from './partes';
+import {
+  backgroundField,
+  headingAlignField,
+  headingFields,
+  headingLevelField,
+  headingToneField,
+} from './partes';
 
 import type { Block } from 'payload';
 
@@ -13,6 +19,7 @@ export const Blog: Block = {
   labels: { singular: 'Blog', plural: 'Blogs' },
   fields: [
     ...headingFields,
+    headingLevelField,
     headingToneField,
     {
       name: 'description',
@@ -20,13 +27,8 @@ export const Blog: Block = {
       localized: true,
       admin: { description: 'Párrafo de entrada entre el titular y las tarjetas.' },
     },
-    {
-      name: 'background',
-      type: 'select',
-      defaultValue: 'default',
-      options: ['default', 'muted', 'none'],
-      admin: { description: 'Fondo de la sección. Las secciones suelen alternar.' },
-    },
+    backgroundField(),
+    headingAlignField(),
     {
       name: 'source',
       type: 'select',

@@ -1,4 +1,12 @@
-import { headingFields, headingToneField, iconField, linkFields } from './partes';
+import {
+  backgroundField,
+  headingAlignField,
+  headingFields,
+  headingToneField,
+  iconField,
+  linkFields,
+  headingLevelField,
+} from './partes';
 
 import type { Block } from 'payload';
 
@@ -8,6 +16,7 @@ export const IconGrid: Block = {
   fields: [
     ...headingFields,
     headingToneField,
+    headingLevelField,
     {
       name: 'columns',
       type: 'number',
@@ -30,6 +39,17 @@ export const IconGrid: Block = {
       },
     },
     {
+      name: 'iconStyle',
+      type: 'select',
+      defaultValue: 'outline',
+      options: ['outline', 'filled'],
+      admin: {
+        description:
+          'Marco del icono: anillo fino con el icono en color de marca (outline) o círculo relleno de marca (filled). La lista de equipamiento no tiene marco.',
+        condition: (_, __, { blockData }) => blockData?.variant !== 'equipment',
+      },
+    },
+    {
       name: 'description',
       type: 'textarea',
       localized: true,
@@ -38,13 +58,8 @@ export const IconGrid: Block = {
           'Párrafo de entrada entre el titular y la rejilla. Distinto del antetítulo, que va encima y es una línea corta.',
       },
     },
-    {
-      name: 'background',
-      type: 'select',
-      defaultValue: 'default',
-      options: ['default', 'muted', 'none'],
-      admin: { description: 'Fondo de la sección. Las secciones suelen alternar.' },
-    },
+    backgroundField(),
+    headingAlignField(),
     { name: 'ctas', type: 'array', fields: linkFields },
     {
       name: 'items',

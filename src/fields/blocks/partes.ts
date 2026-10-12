@@ -1,3 +1,5 @@
+import { HEADING_ALIGNS, HEADING_LEVELS, SECTION_BACKGROUNDS } from '@hwe-platform/core-ui';
+
 import { iconField } from '../icons';
 
 import type { Field } from 'payload';
@@ -56,6 +58,58 @@ export const headingToneField: Field = {
   defaultValue: 'default',
   options: ['default', 'brand'],
   admin: { description: 'Titular en color de texto, o en color de marca para destacar.' },
+};
+
+/**
+ * Fondo de la sección. Las opciones son las de `SECTION_BACKGROUNDS` de
+ * core-ui, que es también el enum del schema: así no pueden divergir.
+ * `accent` es una banda de acento y `secondary` una banda oscura.
+ *
+ * @param defaultValue - `default` en las secciones; el CTA nace sin fondo.
+ */
+export function backgroundField(
+  defaultValue: (typeof SECTION_BACKGROUNDS)[number] = 'default',
+): Field {
+  return {
+    name: 'background',
+    type: 'select',
+    defaultValue,
+    options: [...SECTION_BACKGROUNDS],
+    admin: {
+      description:
+        'Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.',
+    },
+  };
+}
+
+/**
+ * Alineación de la cabecera y de los botones de la sección (HU-038). Las opciones son las de
+ * `HEADING_ALIGNS` de core-ui, que es también el enum del schema. Va como campo del bloque y no
+ * como token porque lo decide cada sección: un site puede centrar una sola.
+ */
+export function headingAlignField(): Field {
+  return {
+    name: 'headingAlign',
+    type: 'select',
+    defaultValue: 'left',
+    options: [...HEADING_ALIGNS],
+    admin: {
+      description: 'Alineación del título, el texto de entrada y los botones de la sección.',
+    },
+  };
+}
+
+/**
+ * Nivel del titular del bloque. **Oculto en el admin** (`admin.hidden`): lo fija
+ * el pipeline según la posición del bloque, porque una jerarquía de
+ * encabezados rota no se ve en el panel. Sin valor, el bloque usa `h2`.
+ * Ver `headingLevelSchema` en core-ui.
+ */
+export const headingLevelField: Field = {
+  name: 'headingLevel',
+  type: 'select',
+  options: [...HEADING_LEVELS],
+  admin: { hidden: true },
 };
 
 export { iconField };

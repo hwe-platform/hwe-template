@@ -1,4 +1,10 @@
-import { headingFields, headingToneField, linkFields } from './partes';
+import {
+  backgroundField,
+  headingFields,
+  headingLevelField,
+  headingToneField,
+  linkFields,
+} from './partes';
 
 import type { Block } from 'payload';
 
@@ -16,14 +22,9 @@ export const LocationMap: Block = {
   labels: { singular: 'Mapa', plural: 'Mapas' },
   fields: [
     ...headingFields,
+    headingLevelField,
     headingToneField,
-    {
-      name: 'background',
-      type: 'select',
-      defaultValue: 'default',
-      options: ['default', 'muted', 'none'],
-      admin: { description: 'Fondo de la sección. Las secciones suelen alternar.' },
-    },
+    backgroundField(),
     {
       name: 'showAddress',
       type: 'checkbox',

@@ -1,5 +1,6 @@
 import * as migration_20260929_152152_initial from './20260929_152152_initial';
 import * as migration_20261001_140635_hu026_indexing from './20261001_140635_hu026_indexing';
+import * as migration_20261012_094431_contrato_tokens from './20261012_094431_contrato_tokens';
 
 export const migrations = [
   {
@@ -10,6 +11,11 @@ export const migrations = [
   {
     up: migration_20261001_140635_hu026_indexing.up,
     down: migration_20261001_140635_hu026_indexing.down,
-    name: '20261001_140635_hu026_indexing'
+    name: '20261001_140635_hu026_indexing',
+  },
+  {
+    up: migration_20261012_094431_contrato_tokens.up,
+    down: migration_20261012_094431_contrato_tokens.down,
+    name: '20261012_094431_contrato_tokens',
   },
 ];

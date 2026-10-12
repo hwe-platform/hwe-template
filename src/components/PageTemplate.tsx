@@ -31,6 +31,16 @@ function tieneHero(doc: Record<string, unknown>): boolean {
 }
 
 /**
+ * Si el hero cede su `<h1>` (`showAsHeading: false`). Entonces el
+ * `BlockRenderer` promueve a `<h1>` el primer bloque con titular, para que la
+ * página no se quede sin encabezado principal.
+ */
+function heroCedeElTitular(doc: Record<string, unknown>): boolean {
+  const resultado = heroSchema.safeParse(normalizePayloadData(doc.hero));
+  return resultado.success && resultado.data.variant !== 'none' && !resultado.data.showAsHeading;
+}
+
+/**
  * Secciones fijas que añade el `type` de la página, entre el hero y los bloques.
  *
  * Hoy solo `contact` (HU-021): formulario, datos NAP y mapa, todo desde
@@ -118,6 +128,7 @@ export async function PageTemplate({ doc, locale, siteConfig, breadcrumbs }: Tem
         blocks={await resolverBloques(payload, blocksOf(doc), { locale, siteConfig })}
         customRegistry={blockRegistry}
         slotRegistry={slotRegistry}
+        promoteFirstHeading={heroCedeElTitular(doc)}
       />
     </>
   );

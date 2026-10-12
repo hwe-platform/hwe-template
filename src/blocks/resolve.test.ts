@@ -135,3 +135,90 @@ describe('resolverBloques — media-text', () => {
     expect(bloqueado).toMatchObject({ consentGranted: false });
   });
 });
+
+describe('resolverBloques — card-grid con artículos (V39, HU-038)', () => {
+  const articulo = {
+    title: 'La saison commence',
+    slug: 'la-saison-commence',
+    category: 'Actualités',
+    publishedAt: '2026-04-01T10:00:00.000Z',
+    image: { id: 1, url: '/a.jpg', alt: 'a' },
+  };
+  const rejilla = (extra: Record<string, unknown> = {}) =>
+    bloque({ blockType: 'card-grid', card: 'stacked', source: 'articles', items: [], ...extra });
+
+  it('consulta los artículos en el idioma de la página y los deja en items como tarjetas', async () => {
+    const find = vi.fn().mockResolvedValue({ docs: [articulo] });
+
+    const [resuelto] = await resolverBloques(payloadFalso(find), [rejilla()], {
+      locale: 'fr',
+      siteConfig,
+    });
+
+    expect(find).toHaveBeenCalledWith(
+      expect.objectContaining({
+        collection: 'articles',
+        locale: 'fr',
+        sort: '-publishedAt',
+        limit: 3,
+      }),
+    );
+    expect(resuelto).toMatchObject({
+      blockType: 'card-grid',
+      items: [
+        {
+          title: 'La saison commence',
+          tag: 'Actualités',
+          url: '/blog/la-saison-commence',
+          readMoreLabel: "Lire l'article",
+        },
+      ],
+    });
+  });
+
+  it('pasa a la consulta el límite, la categoría y los destacados de sourceConfig', async () => {
+    const find = vi.fn().mockResolvedValue({ docs: [] });
+
+    await resolverBloques(
+      payloadFalso(find),
+      [rejilla({ sourceConfig: { limit: 6, category: 'Gastronomie' } })],
+      { locale: 'fr', siteConfig },
+    );
+
+    expect(find).toHaveBeenCalledWith(
+      expect.objectContaining({ limit: 6, where: { category: { equals: 'Gastronomie' } } }),
+    );
+  });
+});
+
+describe('resolverBloques — card-grid sin artículos (V39, HU-038)', () => {
+  const rejilla = (extra: Record<string, unknown> = {}) =>
+    bloque({ blockType: 'card-grid', card: 'stacked', source: 'articles', items: [], ...extra });
+
+  it('si la consulta falla, la rejilla se queda sin tarjetas y no revienta la página', async () => {
+    const find = vi.fn().mockRejectedValue(new Error('sin base de datos'));
+
+    const [resuelto] = await resolverBloques(payloadFalso(find), [rejilla()], {
+      locale: 'fr',
+      siteConfig,
+    });
+
+    expect(resuelto).toMatchObject({ blockType: 'card-grid', items: [] });
+  });
+
+  it.each(['manual', 'accommodations', 'entities'])(
+    'con source %s no consulta nada y deja el bloque como llegó',
+    async (source) => {
+      const find = vi.fn();
+      const original = rejilla({ source, items: [{ title: 'A mano' }] });
+
+      const [resuelto] = await resolverBloques(payloadFalso(find), [original], {
+        locale: 'fr',
+        siteConfig,
+      });
+
+      expect(find).not.toHaveBeenCalled();
+      expect(resuelto).toBe(original);
+    },
+  );
+});

@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 @import './theme.css';
+/* Ajustes que los tokens no cubren (agente uxui-designer). Ver el fichero. */
+@import './overrides.css';
 
 /*
  * Overrides de marca para los widgets de motor de reservas. Se importan los
@@ -60,19 +62,23 @@
     @apply font-heading font-bold;
   }
 
-  /* clamp(mínimo, preferido, máximo) — escala fluida entre mobile y desktop sin breakpoints */
+  /*
+   * clamp(mínimo, preferido, máximo) — escala fluida entre mobile y desktop sin
+   * breakpoints. h1-h3 leen la escala del theme (--h1-size…): cada fuente tiene
+   * su x-height y su ancho, y el mismo clamp no sirve para todas.
+   */
   h1 {
-    font-size: clamp(3rem, 10vw, 5.5rem);
+    font-size: var(--h1-size, clamp(3rem, 10vw, 5.5rem));
     line-height: 1.1;
   }
 
   h2 {
-    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-size: var(--h2-size, clamp(2rem, 6vw, 3.5rem));
     line-height: 1.2;
   }
 
   h3 {
-    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-size: var(--h3-size, clamp(1.5rem, 4vw, 2rem));
     line-height: 1.3;
   }
 

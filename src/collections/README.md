@@ -7,8 +7,11 @@ La derivación no es automática: los schemas Zod modelan la **forma de lectura*
 (lo que Payload devuelve) y no llevan la metainformación que un config necesita
 (`localized`, `required`, labels, destino de los `upload`/`relationship`). Por eso
 los configs se escriben a mano y un **test de paridad** comprueba que los campos
-de cada config coinciden con las claves de su schema Zod. Si alguien añade un
-campo en un sitio y no en el otro, el test falla.
+de cada config coinciden con las claves de su schema Zod, también dentro de
+grupos, arrays y bloques, y que las opciones de cada `select` son las del enum.
+Si alguien añade un campo en un sitio y no en el otro, el test falla. Lo que
+difiere a propósito (campos que el site resuelve antes de pintar, valores que el
+editor no puede elegir) lo declara core-ui en `BLOCK_PARITY_EXCEPTIONS`.
 
 ## TODO Hito 5 — antes de extraer estas colecciones a core-ui
 
@@ -26,4 +29,4 @@ le sirven, que es justo lo que DEC-007 quiere evitar. La decisión de qué es n�
 y qué es extensión hay que tomarla **antes** de la extracción, no después.
 
 Seguimiento: issue "Definir schemas base vs extensiones por tipo de web" (hito-5)
-y `hwe-tools/docs/arquitectura/schemas-base-extensiones.md`.
+y `docs/arquitectura/schemas-base-extensiones.md` en hwe-tools.

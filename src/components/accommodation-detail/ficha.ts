@@ -108,6 +108,9 @@ export function heroDeFicha(
     subtitle: subtitulo.join(' · '),
     titleMode: 'text',
     align: 'left',
+    height: 'standard',
+    cta: [],
+    showAsHeading: true,
     showBreadcrumbs: true,
   };
 }

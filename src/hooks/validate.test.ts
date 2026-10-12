@@ -64,8 +64,8 @@ describe('validateGlobalWrite', () => {
   it('valida el global y devuelve sus datos', () => {
     const hookGlobal = validateGlobalWrite(siteConfigUpdateSchema, 'site-config');
     // `.partial()` solo alcanza al primer nivel: si llega `general`, llega
-    // entero, y aquí le faltan `siteDescription`, `logo`… Por eso falla.
-    const data = { general: { siteName: 'Camping Example' } };
+    // entero, y aquí le falta `siteName`, que es lo único obligatorio. Por eso falla.
+    const data = { general: { siteDescription: 'Camping example' } };
 
     expect(() => hookGlobal({ data } as unknown as ArgsGlobal)).toThrow(APIError);
     expect(hookGlobal({ data: {} } as unknown as ArgsGlobal)).toEqual({});

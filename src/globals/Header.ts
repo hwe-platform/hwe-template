@@ -17,7 +17,7 @@ const navLinkFields = [
  *
  * La navegación admite dos niveles: los items de primer nivel con `children`
  * se pintan como desplegable. El orden lo controla el editor arrastrando en el
- * admin (ver hwe-tools/docs/arquitectura/paginas-routing.md).
+ * admin (ver docs/arquitectura/paginas-routing.md).
  */
 export const Header: GlobalConfig = {
   slug: 'header',
@@ -50,7 +50,32 @@ export const Header: GlobalConfig = {
           ],
         },
         { name: 'showLogin', type: 'checkbox', defaultValue: false },
-        { name: 'bookingButtonLabel', type: 'text', required: true, localized: true },
+        {
+          name: 'bookingButton',
+          type: 'group',
+          label: 'Botón de reserva',
+          admin: {
+            description:
+              'Opcional. Hacen falta el texto y la URL: si falta alguno, el botón no se pinta en la barra, el menú móvil ni el widget inferior.',
+          },
+          fields: [
+            { name: 'label', type: 'text', localized: true },
+            {
+              name: 'url',
+              type: 'text',
+              admin: { description: 'Ej: /reserver o la URL del motor.' },
+            },
+            {
+              name: 'target',
+              type: 'select',
+              // Sin `defaultValue` a propósito: un grupo vacío debe llegar vacío
+              // para que cuente como «sin botón». El `_self` lo pone el schema.
+              // Las opciones deben coincidir con el enum de `header.schema.ts`.
+              options: ['_self', '_blank'],
+              admin: { description: '_blank abre en una pestaña nueva (motor externo).' },
+            },
+          ],
+        },
       ],
     },
     {

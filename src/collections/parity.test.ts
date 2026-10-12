@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
+  BLOCK_PARITY_EXCEPTIONS,
   compareFieldParity,
+  compareNestedFieldParity,
   compareOptionParity,
   mediaSchema,
   categorySchema,
@@ -31,8 +33,9 @@ import type { CollectionConfig } from 'payload';
  * sin el otro: si alguien añade un campo al config y no al schema (o al revés),
  * este test falla y dice exactamente qué campo falta y dónde.
  *
- * Compara solo el primer nivel. La paridad dentro de grupos y arrays la cubre
- * el schema Zod al validar en el `beforeChange`.
+ * Compara el primer nivel y, aparte, lo de dentro de grupos, arrays y bloques:
+ * un campo del schema que falta en un bloque no rompe ninguna escritura —el
+ * editor simplemente no puede rellenarlo—, así que solo lo caza este test.
  */
 
 /** `id` lo asigna Payload en todas las colecciones. */
@@ -93,13 +96,28 @@ describe('paridad entre los configs de Payload y los schemas Zod', () => {
     expect(result.missingInSchema, 'campos del config que faltan en el schema').toEqual([]);
   });
 
+  // Lo que el site resuelve antes de pintar está en el schema y no en el
+  // config a propósito: lo declara core-ui, junto a los schemas de bloque.
+  it.each(casos)(
+    'los campos de dentro de grupos, arrays y bloques de $nombre coinciden con su schema',
+    ({ config, schema }) => {
+      const fields = config.fields as ParityField[];
+      const { resolved } = BLOCK_PARITY_EXCEPTIONS;
+
+      expect(compareNestedFieldParity({ schema, fields, resolved })).toEqual([]);
+    },
+  );
+
   // La paridad de nombres no dice nada de los valores. Un `select` cuyas
   // opciones no son las del enum deja al editor elegir algo que el schema
   // rechaza, y el fallo aparece al escribir, lejos de su causa.
   it.each(casos)(
     'las opciones de los select de $nombre coinciden con su enum',
     ({ config, schema }) => {
-      expect(compareOptionParity({ schema, fields: config.fields as ParityField[] })).toEqual([]);
+      const fields = config.fields as ParityField[];
+      const { schemaOnlyOptions: schemaOnly } = BLOCK_PARITY_EXCEPTIONS;
+
+      expect(compareOptionParity({ schema, fields, schemaOnly })).toEqual([]);
     },
   );
 });
