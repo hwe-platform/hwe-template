@@ -3,6 +3,13 @@ import { imageUrl, nodeId, omitEmpty, pageUrl, textOrUndefined } from './utils';
 import type { ArticleInput, JsonLdContext, JsonLdNode } from './types';
 
 /**
+ * Los artículos responden bajo `/blog/<slug>` (`ARTICLES_PREFIX` en core-ui,
+ * `resolveRoute`). Se repite aquí en lugar de importarlo para no depender de que
+ * el `dist` de core-ui esté recompilado; el test fija la URL.
+ */
+const PREFIJO_ARTICULOS = 'blog';
+
+/**
  * Schema BlogPosting de la ficha de un artículo (capa 2).
  *
  * **Stub**: existe y está testeado, pero no se conecta al orquestador hasta
@@ -30,7 +37,7 @@ export function buildArticleSchema(article: ArticleInput, ctx: JsonLdContext): J
     '@type': 'BlogPosting',
     headline,
     description,
-    url: pageUrl(ctx, slug),
+    url: pageUrl(ctx, `${PREFIJO_ARTICULOS}/${slug}`),
     datePublished,
     dateModified: updatedAt && updatedAt !== datePublished ? updatedAt : undefined,
     image: imageUrl(ctx, article.image),

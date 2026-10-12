@@ -20,7 +20,7 @@ describe('buildArticleSchema', () => {
       '@type': 'BlogPosting',
       headline: 'Nouvelle saison 2026 : toutes les nouveautés du camping',
       description: 'Découvrez les nouveautés pour la saison 2026.',
-      url: 'https://example.com/nouvelle-saison-2026',
+      url: 'https://example.com/blog/nouvelle-saison-2026',
       datePublished: '2026-03-15T10:00:00+01:00',
       dateModified: '2026-03-20T14:30:00+01:00',
       image: 'https://example.com/api/media/file/saison-2026.jpg',
