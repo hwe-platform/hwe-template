@@ -1,0 +1,14 @@
+/*
+ * overrides.css — CSS custom del agente uxui-designer para ajustes que los
+ * tokens no cubren.
+ *
+ * Es el segundo nivel de la cadena de personalización del site:
+ *   1. theme.css      — tokens. Lo genera /import-figma. Cubre casi todo.
+ *   2. overrides.css  — este fichero. Un gap concreto, una posición relativa:
+ *                       lo que un valor de token no puede expresar.
+ *   3. src/blocks/    — override de componente, solo si cambia la estructura HTML.
+ *
+ * Antes de escribir aquí, comprobar que no existe un token para ello
+ * (docs/arquitectura/tokens.md). Cada regla lleva un comentario con el porqué.
+ * Vacío a propósito mientras no haga falta.
+ */

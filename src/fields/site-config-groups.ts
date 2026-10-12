@@ -12,17 +12,22 @@ export const generalGroup: Field = {
   label: 'General',
   fields: [
     { name: 'siteName', type: 'text', required: true },
-    { name: 'siteDescription', type: 'textarea', required: true, localized: true },
-    { name: 'logo', type: 'upload', relationTo: 'media', required: true },
+    // Opcionales (DEC-012): lo que falte no se pinta.
+    { name: 'siteDescription', type: 'textarea', localized: true },
+    {
+      name: 'logo',
+      type: 'upload',
+      relationTo: 'media',
+      admin: { description: 'Sin logo, se muestra el nombre del site como texto.' },
+    },
     {
       name: 'logoInverted',
       type: 'upload',
       relationTo: 'media',
-      required: true,
-      admin: { description: 'Versión para fondos oscuros.' },
+      admin: { description: 'Versión para fondos oscuros. Opcional.' },
     },
     { name: 'stars', type: 'number', admin: { description: 'Clasificación. Opcional.' } },
-    { name: 'openingDates', type: 'text', required: true, localized: true },
+    { name: 'openingDates', type: 'text', localized: true },
     {
       name: 'businessType',
       type: 'select',
@@ -41,9 +46,9 @@ export const contactGroup: Field = {
   label: 'Contacto',
   fields: [
     { name: 'address', type: 'text', required: true },
-    { name: 'postalCode', type: 'text', required: true },
+    { name: 'postalCode', type: 'text' },
     { name: 'city', type: 'text', required: true },
-    { name: 'country', type: 'text', required: true },
+    { name: 'country', type: 'text' },
     { name: 'phone', type: 'text', required: true },
     { name: 'email', type: 'email', required: true },
   ],
@@ -55,8 +60,9 @@ export const locationGroup: Field = {
   type: 'group',
   label: 'Ubicación',
   fields: [
-    { name: 'latitude', type: 'number', required: true, admin: ADMIN_DECIMAL },
-    { name: 'longitude', type: 'number', required: true, admin: ADMIN_DECIMAL },
+    // Opcionales (DEC-012): sin coordenadas, el mapa no se pinta.
+    { name: 'latitude', type: 'number', admin: ADMIN_DECIMAL },
+    { name: 'longitude', type: 'number', admin: ADMIN_DECIMAL },
     {
       name: 'transport',
       type: 'array',

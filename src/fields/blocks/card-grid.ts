@@ -1,4 +1,12 @@
-import { headingFields, headingToneField, linkFields } from './partes';
+import {
+  backgroundField,
+  headingAlignField,
+  headingFields,
+  headingToneField,
+  linkFields,
+  headingLevelField,
+  iconField,
+} from './partes';
 
 import type { Block } from 'payload';
 
@@ -8,19 +16,15 @@ export const CardGrid: Block = {
   fields: [
     ...headingFields,
     headingToneField,
+    headingLevelField,
     {
       name: 'description',
       type: 'textarea',
       localized: true,
       admin: { description: 'Párrafo de entrada entre el titular y la rejilla.' },
     },
-    {
-      name: 'background',
-      type: 'select',
-      defaultValue: 'default',
-      options: ['default', 'muted', 'none'],
-      admin: { description: 'Fondo de la sección. Las secciones suelen alternar.' },
-    },
+    backgroundField(),
+    headingAlignField(),
     {
       name: 'card',
       type: 'select',
@@ -63,7 +67,7 @@ export const CardGrid: Block = {
       options: ['manual', 'accommodations', 'entities', 'articles'],
       admin: {
         description:
-          'De dónde salen las tarjetas. Hoy solo se pintan las manuales; la resolución de colecciones llega con el resolver del site.',
+          'De dónde salen las tarjetas. Hoy funcionan manual (las de abajo) y articles (los artículos del blog, según el filtro). accommodations y entities aún no se pintan: llegan con el rediseño de alojamientos.',
       },
     },
     {
@@ -85,6 +89,9 @@ export const CardGrid: Block = {
         { name: 'title', type: 'text', required: true, localized: true },
         { name: 'subtitle', type: 'text', localized: true },
         { name: 'tag', type: 'text', localized: true },
+        iconField({
+          description: 'Icono en un círculo sobre el titular. Solo en tarjetas overlay.',
+        }),
         { name: 'url', type: 'text' },
         { name: 'date', type: 'text' },
         { name: 'readMoreLabel', type: 'text', localized: true },

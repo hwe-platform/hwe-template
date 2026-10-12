@@ -515,23 +515,87 @@ export interface Accommodation {
               [k: string]: unknown;
             } | null;
             /**
-             * Qué se pinta en la columna del medio.
+             * Qué se pinta en la columna del medio. cards: tarjetas con foto y enlace.
              */
-            media: 'image' | 'embed' | 'carousel';
+            media: 'image' | 'embed' | 'carousel' | 'cards';
             image?: (number | null) | Media;
             images?: (number | Media)[] | null;
             /**
              * URL del contenido incrustado — por ejemplo, un mapa. Dominios admitidos: www.google.com, maps.google.com, www.youtube-nocookie.com, player.vimeo.com.
              */
             embedUrl?: string | null;
+            mediaCards?:
+              | {
+                  title: string;
+                  subtitle?: string | null;
+                  /**
+                   * Icono en un círculo sobre el titular.
+                   */
+                  icon?:
+                    | (
+                        | 'utensils'
+                        | 'bed'
+                        | 'waves'
+                        | 'mapPin'
+                        | 'wifi'
+                        | 'car'
+                        | 'users'
+                        | 'calendar'
+                        | 'phone'
+                        | 'mail'
+                        | 'check'
+                        | 'x'
+                        | 'chevronRight'
+                        | 'chevronLeft'
+                        | 'chevronDown'
+                        | 'arrowRight'
+                        | 'star'
+                        | 'heart'
+                        | 'menu'
+                        | 'search'
+                        | 'pawPrint'
+                        | 'help'
+                        | 'video'
+                        | 'user'
+                        | 'train'
+                        | 'plane'
+                        | 'treePine'
+                        | 'leaf'
+                        | 'flame'
+                        | 'bike'
+                        | 'shoppingBag'
+                        | 'refreshCcw'
+                        | 'clock'
+                        | 'accessibility'
+                        | 'maximize2'
+                        | 'wind'
+                        | 'doorOpen'
+                        | 'coffee'
+                        | 'bath'
+                        | 'tv'
+                        | 'dog'
+                        | 'fileText'
+                        | 'download'
+                      )
+                    | null;
+                  image?: (number | null) | Media;
+                  url?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Reparto: medio a la izquierda o a la derecha del texto, tres columnas con un segundo medio (media-split), o apilados.
+             */
+            layout?: ('media-left' | 'media-right' | 'media-split' | 'stack-media-first' | 'stack-text-first') | null;
+            /**
+             * Qué pinta la tercera columna: una imagen o tarjetas.
+             */
+            mediaTypeSecondary?: ('image' | 'cards') | null;
+            mediaSecondary?: (number | null) | Media;
             /**
              * Columnas que ocupa el medio sobre doce. 6 es mitad y mitad; el diseño de referencia usa 5, 6 y 7.
              */
             split?: number | null;
-            /**
-             * Pone el medio a la derecha en lugar de a la izquierda.
-             */
-            reverse?: boolean | null;
             /**
              * Línea corta de acento a la izquierda del antetítulo.
              */
@@ -561,9 +625,10 @@ export interface Accommodation {
              */
             titleAccent?: string | null;
             /**
-             * Fondo de la sección. Las secciones suelen alternar.
+             * Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.
              */
-            background?: ('default' | 'muted' | 'none') | null;
+            background?: ('default' | 'muted' | 'accent' | 'secondary' | 'none') | null;
+            headingLevel?: ('1' | '2' | '3' | '4') | null;
             /**
              * Identificador para que el site inserte contenido propio en esta instancia (slot-registry.tsx). Déjalo vacío si no hay ninguno.
              */
@@ -579,6 +644,7 @@ export interface Accommodation {
              * Titular en color de texto, o en color de marca para destacar.
              */
             headingTone?: ('default' | 'brand') | null;
+            headingLevel?: ('1' | '2' | '3' | '4') | null;
             /**
              * Cuántos caben en una fila en pantalla grande. El diseño de referencia usa 3, 5 y 6. El tamaño de los iconos y la rampa responsive se derivan de este número.
              */
@@ -588,13 +654,21 @@ export interface Accommodation {
              */
             variant?: ('bare' | 'card' | 'equipment') | null;
             /**
+             * Marco del icono: anillo fino con el icono en color de marca (outline) o círculo relleno de marca (filled). La lista de equipamiento no tiene marco.
+             */
+            iconStyle?: ('outline' | 'filled') | null;
+            /**
              * Párrafo de entrada entre el titular y la rejilla. Distinto del antetítulo, que va encima y es una línea corta.
              */
             description?: string | null;
             /**
-             * Fondo de la sección. Las secciones suelen alternar.
+             * Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.
              */
-            background?: ('default' | 'muted' | 'none') | null;
+            background?: ('default' | 'muted' | 'accent' | 'secondary' | 'none') | null;
+            /**
+             * Alineación del título, el texto de entrada y los botones de la sección.
+             */
+            headingAlign?: ('left' | 'center') | null;
             ctas?:
               | {
                   label: string;
@@ -674,14 +748,19 @@ export interface Accommodation {
              * Titular en color de texto, o en color de marca para destacar.
              */
             headingTone?: ('default' | 'brand') | null;
+            headingLevel?: ('1' | '2' | '3' | '4') | null;
             /**
              * Párrafo de entrada entre el titular y la rejilla.
              */
             description?: string | null;
             /**
-             * Fondo de la sección. Las secciones suelen alternar.
+             * Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.
              */
-            background?: ('default' | 'muted' | 'none') | null;
+            background?: ('default' | 'muted' | 'accent' | 'secondary' | 'none') | null;
+            /**
+             * Alineación del título, el texto de entrada y los botones de la sección.
+             */
+            headingAlign?: ('left' | 'center') | null;
             /**
              * Texto sobre la imagen, o imagen arriba y texto debajo.
              */
@@ -699,7 +778,7 @@ export interface Accommodation {
              */
             spans?: number[] | null;
             /**
-             * De dónde salen las tarjetas. Hoy solo se pintan las manuales; la resolución de colecciones llega con el resolver del site.
+             * De dónde salen las tarjetas. Hoy funcionan manual (las de abajo) y articles (los artículos del blog, según el filtro). accommodations y entities aún no se pintan: llegan con el rediseño de alojamientos.
              */
             source?: ('manual' | 'accommodations' | 'entities' | 'articles') | null;
             sourceConfig?: {
@@ -713,6 +792,56 @@ export interface Accommodation {
                   title: string;
                   subtitle?: string | null;
                   tag?: string | null;
+                  /**
+                   * Icono en un círculo sobre el titular. Solo en tarjetas overlay.
+                   */
+                  icon?:
+                    | (
+                        | 'utensils'
+                        | 'bed'
+                        | 'waves'
+                        | 'mapPin'
+                        | 'wifi'
+                        | 'car'
+                        | 'users'
+                        | 'calendar'
+                        | 'phone'
+                        | 'mail'
+                        | 'check'
+                        | 'x'
+                        | 'chevronRight'
+                        | 'chevronLeft'
+                        | 'chevronDown'
+                        | 'arrowRight'
+                        | 'star'
+                        | 'heart'
+                        | 'menu'
+                        | 'search'
+                        | 'pawPrint'
+                        | 'help'
+                        | 'video'
+                        | 'user'
+                        | 'train'
+                        | 'plane'
+                        | 'treePine'
+                        | 'leaf'
+                        | 'flame'
+                        | 'bike'
+                        | 'shoppingBag'
+                        | 'refreshCcw'
+                        | 'clock'
+                        | 'accessibility'
+                        | 'maximize2'
+                        | 'wind'
+                        | 'doorOpen'
+                        | 'coffee'
+                        | 'bath'
+                        | 'tv'
+                        | 'dog'
+                        | 'fileText'
+                        | 'download'
+                      )
+                    | null;
                   url?: string | null;
                   date?: string | null;
                   readMoreLabel?: string | null;
@@ -742,6 +871,7 @@ export interface Accommodation {
         | {
             title?: string | null;
             subtitle?: string | null;
+            headingLevel?: ('1' | '2' | '3' | '4') | null;
             /**
              * Titular en color de texto, o en color de marca para destacar.
              */
@@ -751,9 +881,13 @@ export interface Accommodation {
              */
             description?: string | null;
             /**
-             * Fondo de la sección. Las secciones suelen alternar.
+             * Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.
              */
-            background?: ('default' | 'muted' | 'none') | null;
+            background?: ('default' | 'muted' | 'accent' | 'secondary' | 'none') | null;
+            /**
+             * Alineación del título, el texto de entrada y los botones de la sección.
+             */
+            headingAlign?: ('left' | 'center') | null;
             /**
              * Qué artículos se muestran.
              */
@@ -781,9 +915,13 @@ export interface Accommodation {
              */
             description?: string | null;
             /**
-             * Fondo de la sección. Las secciones suelen alternar.
+             * Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.
              */
-            background?: ('default' | 'muted' | 'none') | null;
+            background?: ('default' | 'muted' | 'accent' | 'secondary' | 'none') | null;
+            /**
+             * Alineación del título, el texto de entrada y los botones de la sección.
+             */
+            headingAlign?: ('left' | 'center') | null;
             /**
              * slider y slider-thumbs usan el carrusel; grid, masonry y collage son CSS puro.
              */
@@ -838,7 +976,7 @@ export interface Accommodation {
              */
             slidesPerView?: number | null;
             /**
-             * Nivel del titular en la jerarquía de la página. Nunca h1.
+             * Nivel del titular en la jerarquía de la página. Vacío, h2. Nunca h1: si la galería abre la página y el hero cede su h1, lo pone el renderer.
              */
             headingLevel?: ('2' | '3' | '4') | null;
             ctas?:
@@ -860,14 +998,15 @@ export interface Accommodation {
         | {
             title?: string | null;
             subtitle?: string | null;
+            headingLevel?: ('1' | '2' | '3' | '4') | null;
             /**
              * Titular en color de texto, o en color de marca para destacar.
              */
             headingTone?: ('default' | 'brand') | null;
             /**
-             * Fondo de la sección. Las secciones suelen alternar.
+             * Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.
              */
-            background?: ('default' | 'muted' | 'none') | null;
+            background?: ('default' | 'muted' | 'accent' | 'secondary' | 'none') | null;
             /**
              * Nombre y dirección junto al mapa. Se editan en Configuración del site → Contacto.
              */
@@ -911,6 +1050,7 @@ export interface Accommodation {
               };
               [k: string]: unknown;
             };
+            headingLevel?: ('1' | '2' | '3' | '4') | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'rich-text';
@@ -928,6 +1068,15 @@ export interface Accommodation {
               icon?: ('arrowRight' | 'chevronRight' | 'calendar' | 'phone' | 'mail') | null;
               id?: string | null;
             }[];
+            /**
+             * Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.
+             */
+            background?: ('default' | 'muted' | 'accent' | 'secondary' | 'none') | null;
+            /**
+             * Foto de fondo. Con ella la banda lleva un velo oscuro y el texto en blanco, y el fondo de arriba no se aplica.
+             */
+            backgroundImage?: (number | null) | Media;
+            headingLevel?: ('1' | '2' | '3' | '4') | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'cta';
@@ -1173,7 +1322,7 @@ export interface Page {
    */
   parent?: (number | null) | Page;
   hero: {
-    variant: 'video' | 'image' | 'minimal' | 'none';
+    variant: 'video' | 'image' | 'minimal' | 'slider' | 'none';
     media?: (number | null) | Media;
     /**
      * Línea corta sobre el titular. En el diseño, la localización.
@@ -1185,11 +1334,62 @@ export interface Page {
     title?: string | null;
     subtitle?: string | null;
     /**
-     * Con "logo" el logo del site hace de titular. El h1 se pinta igual, oculto, para no dejar la página sin encabezado.
+     * Con "logo" el logo del site hace de titular (el h1 se pinta igual, oculto). Con "both", el logo encima y el titular visible debajo, que es el h1.
      */
-    titleMode?: ('text' | 'logo') | null;
+    titleMode?: ('text' | 'logo' | 'both') | null;
     align?: ('left' | 'center') | null;
     showBreadcrumbs?: boolean | null;
+    /**
+     * Altura del hero de imagen: la estándar del theme, una más alta, o pantalla completa (para la home).
+     */
+    height?: ('standard' | 'tall' | 'viewport') | null;
+    /**
+     * Desmárcalo si el titular del hero es un eslogan y no el tema de la página: se pinta igual pero no es el h1, y el primer bloque con titular pasa a serlo.
+     */
+    showAsHeading?: boolean | null;
+    /**
+     * Botones bajo el subtítulo.
+     */
+    cta?:
+      | {
+          label: string;
+          url: string;
+          variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'link-underline') | null;
+          /**
+           * Icono a la derecha del texto. Opcional.
+           */
+          icon?: ('arrowRight' | 'chevronRight' | 'calendar' | 'phone' | 'mail') | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Slider con el texto fijo: solo rotan estas imágenes. Si rellenas "Diapositivas", mandan esas.
+     */
+    mediaSlides?: (number | Media)[] | null;
+    /**
+     * Slider en el que cada diapositiva trae su propio texto y botones.
+     */
+    slides?:
+      | {
+          media: number | Media;
+          eyebrow?: string | null;
+          title?: string | null;
+          subtitle?: string | null;
+          cta?:
+            | {
+                label: string;
+                url: string;
+                variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'link-underline') | null;
+                /**
+                 * Icono a la derecha del texto. Opcional.
+                 */
+                icon?: ('arrowRight' | 'chevronRight' | 'calendar' | 'phone' | 'mail') | null;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
   };
   /**
    * Secciones de la página, en el orden en que se pintan.
@@ -1215,23 +1415,87 @@ export interface Page {
               [k: string]: unknown;
             } | null;
             /**
-             * Qué se pinta en la columna del medio.
+             * Qué se pinta en la columna del medio. cards: tarjetas con foto y enlace.
              */
-            media: 'image' | 'embed' | 'carousel';
+            media: 'image' | 'embed' | 'carousel' | 'cards';
             image?: (number | null) | Media;
             images?: (number | Media)[] | null;
             /**
              * URL del contenido incrustado — por ejemplo, un mapa. Dominios admitidos: www.google.com, maps.google.com, www.youtube-nocookie.com, player.vimeo.com.
              */
             embedUrl?: string | null;
+            mediaCards?:
+              | {
+                  title: string;
+                  subtitle?: string | null;
+                  /**
+                   * Icono en un círculo sobre el titular.
+                   */
+                  icon?:
+                    | (
+                        | 'utensils'
+                        | 'bed'
+                        | 'waves'
+                        | 'mapPin'
+                        | 'wifi'
+                        | 'car'
+                        | 'users'
+                        | 'calendar'
+                        | 'phone'
+                        | 'mail'
+                        | 'check'
+                        | 'x'
+                        | 'chevronRight'
+                        | 'chevronLeft'
+                        | 'chevronDown'
+                        | 'arrowRight'
+                        | 'star'
+                        | 'heart'
+                        | 'menu'
+                        | 'search'
+                        | 'pawPrint'
+                        | 'help'
+                        | 'video'
+                        | 'user'
+                        | 'train'
+                        | 'plane'
+                        | 'treePine'
+                        | 'leaf'
+                        | 'flame'
+                        | 'bike'
+                        | 'shoppingBag'
+                        | 'refreshCcw'
+                        | 'clock'
+                        | 'accessibility'
+                        | 'maximize2'
+                        | 'wind'
+                        | 'doorOpen'
+                        | 'coffee'
+                        | 'bath'
+                        | 'tv'
+                        | 'dog'
+                        | 'fileText'
+                        | 'download'
+                      )
+                    | null;
+                  image?: (number | null) | Media;
+                  url?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Reparto: medio a la izquierda o a la derecha del texto, tres columnas con un segundo medio (media-split), o apilados.
+             */
+            layout?: ('media-left' | 'media-right' | 'media-split' | 'stack-media-first' | 'stack-text-first') | null;
+            /**
+             * Qué pinta la tercera columna: una imagen o tarjetas.
+             */
+            mediaTypeSecondary?: ('image' | 'cards') | null;
+            mediaSecondary?: (number | null) | Media;
             /**
              * Columnas que ocupa el medio sobre doce. 6 es mitad y mitad; el diseño de referencia usa 5, 6 y 7.
              */
             split?: number | null;
-            /**
-             * Pone el medio a la derecha en lugar de a la izquierda.
-             */
-            reverse?: boolean | null;
             /**
              * Línea corta de acento a la izquierda del antetítulo.
              */
@@ -1261,9 +1525,10 @@ export interface Page {
              */
             titleAccent?: string | null;
             /**
-             * Fondo de la sección. Las secciones suelen alternar.
+             * Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.
              */
-            background?: ('default' | 'muted' | 'none') | null;
+            background?: ('default' | 'muted' | 'accent' | 'secondary' | 'none') | null;
+            headingLevel?: ('1' | '2' | '3' | '4') | null;
             /**
              * Identificador para que el site inserte contenido propio en esta instancia (slot-registry.tsx). Déjalo vacío si no hay ninguno.
              */
@@ -1279,6 +1544,7 @@ export interface Page {
              * Titular en color de texto, o en color de marca para destacar.
              */
             headingTone?: ('default' | 'brand') | null;
+            headingLevel?: ('1' | '2' | '3' | '4') | null;
             /**
              * Cuántos caben en una fila en pantalla grande. El diseño de referencia usa 3, 5 y 6. El tamaño de los iconos y la rampa responsive se derivan de este número.
              */
@@ -1288,13 +1554,21 @@ export interface Page {
              */
             variant?: ('bare' | 'card' | 'equipment') | null;
             /**
+             * Marco del icono: anillo fino con el icono en color de marca (outline) o círculo relleno de marca (filled). La lista de equipamiento no tiene marco.
+             */
+            iconStyle?: ('outline' | 'filled') | null;
+            /**
              * Párrafo de entrada entre el titular y la rejilla. Distinto del antetítulo, que va encima y es una línea corta.
              */
             description?: string | null;
             /**
-             * Fondo de la sección. Las secciones suelen alternar.
+             * Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.
              */
-            background?: ('default' | 'muted' | 'none') | null;
+            background?: ('default' | 'muted' | 'accent' | 'secondary' | 'none') | null;
+            /**
+             * Alineación del título, el texto de entrada y los botones de la sección.
+             */
+            headingAlign?: ('left' | 'center') | null;
             ctas?:
               | {
                   label: string;
@@ -1374,14 +1648,19 @@ export interface Page {
              * Titular en color de texto, o en color de marca para destacar.
              */
             headingTone?: ('default' | 'brand') | null;
+            headingLevel?: ('1' | '2' | '3' | '4') | null;
             /**
              * Párrafo de entrada entre el titular y la rejilla.
              */
             description?: string | null;
             /**
-             * Fondo de la sección. Las secciones suelen alternar.
+             * Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.
              */
-            background?: ('default' | 'muted' | 'none') | null;
+            background?: ('default' | 'muted' | 'accent' | 'secondary' | 'none') | null;
+            /**
+             * Alineación del título, el texto de entrada y los botones de la sección.
+             */
+            headingAlign?: ('left' | 'center') | null;
             /**
              * Texto sobre la imagen, o imagen arriba y texto debajo.
              */
@@ -1399,7 +1678,7 @@ export interface Page {
              */
             spans?: number[] | null;
             /**
-             * De dónde salen las tarjetas. Hoy solo se pintan las manuales; la resolución de colecciones llega con el resolver del site.
+             * De dónde salen las tarjetas. Hoy funcionan manual (las de abajo) y articles (los artículos del blog, según el filtro). accommodations y entities aún no se pintan: llegan con el rediseño de alojamientos.
              */
             source?: ('manual' | 'accommodations' | 'entities' | 'articles') | null;
             sourceConfig?: {
@@ -1413,6 +1692,56 @@ export interface Page {
                   title: string;
                   subtitle?: string | null;
                   tag?: string | null;
+                  /**
+                   * Icono en un círculo sobre el titular. Solo en tarjetas overlay.
+                   */
+                  icon?:
+                    | (
+                        | 'utensils'
+                        | 'bed'
+                        | 'waves'
+                        | 'mapPin'
+                        | 'wifi'
+                        | 'car'
+                        | 'users'
+                        | 'calendar'
+                        | 'phone'
+                        | 'mail'
+                        | 'check'
+                        | 'x'
+                        | 'chevronRight'
+                        | 'chevronLeft'
+                        | 'chevronDown'
+                        | 'arrowRight'
+                        | 'star'
+                        | 'heart'
+                        | 'menu'
+                        | 'search'
+                        | 'pawPrint'
+                        | 'help'
+                        | 'video'
+                        | 'user'
+                        | 'train'
+                        | 'plane'
+                        | 'treePine'
+                        | 'leaf'
+                        | 'flame'
+                        | 'bike'
+                        | 'shoppingBag'
+                        | 'refreshCcw'
+                        | 'clock'
+                        | 'accessibility'
+                        | 'maximize2'
+                        | 'wind'
+                        | 'doorOpen'
+                        | 'coffee'
+                        | 'bath'
+                        | 'tv'
+                        | 'dog'
+                        | 'fileText'
+                        | 'download'
+                      )
+                    | null;
                   url?: string | null;
                   date?: string | null;
                   readMoreLabel?: string | null;
@@ -1442,6 +1771,7 @@ export interface Page {
         | {
             title?: string | null;
             subtitle?: string | null;
+            headingLevel?: ('1' | '2' | '3' | '4') | null;
             /**
              * Titular en color de texto, o en color de marca para destacar.
              */
@@ -1451,9 +1781,13 @@ export interface Page {
              */
             description?: string | null;
             /**
-             * Fondo de la sección. Las secciones suelen alternar.
+             * Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.
              */
-            background?: ('default' | 'muted' | 'none') | null;
+            background?: ('default' | 'muted' | 'accent' | 'secondary' | 'none') | null;
+            /**
+             * Alineación del título, el texto de entrada y los botones de la sección.
+             */
+            headingAlign?: ('left' | 'center') | null;
             /**
              * Qué artículos se muestran.
              */
@@ -1481,9 +1815,13 @@ export interface Page {
              */
             description?: string | null;
             /**
-             * Fondo de la sección. Las secciones suelen alternar.
+             * Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.
              */
-            background?: ('default' | 'muted' | 'none') | null;
+            background?: ('default' | 'muted' | 'accent' | 'secondary' | 'none') | null;
+            /**
+             * Alineación del título, el texto de entrada y los botones de la sección.
+             */
+            headingAlign?: ('left' | 'center') | null;
             /**
              * slider y slider-thumbs usan el carrusel; grid, masonry y collage son CSS puro.
              */
@@ -1538,7 +1876,7 @@ export interface Page {
              */
             slidesPerView?: number | null;
             /**
-             * Nivel del titular en la jerarquía de la página. Nunca h1.
+             * Nivel del titular en la jerarquía de la página. Vacío, h2. Nunca h1: si la galería abre la página y el hero cede su h1, lo pone el renderer.
              */
             headingLevel?: ('2' | '3' | '4') | null;
             ctas?:
@@ -1560,14 +1898,15 @@ export interface Page {
         | {
             title?: string | null;
             subtitle?: string | null;
+            headingLevel?: ('1' | '2' | '3' | '4') | null;
             /**
              * Titular en color de texto, o en color de marca para destacar.
              */
             headingTone?: ('default' | 'brand') | null;
             /**
-             * Fondo de la sección. Las secciones suelen alternar.
+             * Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.
              */
-            background?: ('default' | 'muted' | 'none') | null;
+            background?: ('default' | 'muted' | 'accent' | 'secondary' | 'none') | null;
             /**
              * Nombre y dirección junto al mapa. Se editan en Configuración del site → Contacto.
              */
@@ -1611,6 +1950,7 @@ export interface Page {
               };
               [k: string]: unknown;
             };
+            headingLevel?: ('1' | '2' | '3' | '4') | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'rich-text';
@@ -1628,6 +1968,15 @@ export interface Page {
               icon?: ('arrowRight' | 'chevronRight' | 'calendar' | 'phone' | 'mail') | null;
               id?: string | null;
             }[];
+            /**
+             * Fondo de la sección. Las secciones suelen alternar. accent: banda de acento; secondary: banda oscura.
+             */
+            background?: ('default' | 'muted' | 'accent' | 'secondary' | 'none') | null;
+            /**
+             * Foto de fondo. Con ella la banda lleva un velo oscuro y el texto en blanco, y el fondo de arriba no se aplica.
+             */
+            backgroundImage?: (number | null) | Media;
+            headingLevel?: ('1' | '2' | '3' | '4') | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'cta';
@@ -2070,8 +2419,20 @@ export interface AccommodationsSelect<T extends boolean = true> {
               image?: T;
               images?: T;
               embedUrl?: T;
+              mediaCards?:
+                | T
+                | {
+                    title?: T;
+                    subtitle?: T;
+                    icon?: T;
+                    image?: T;
+                    url?: T;
+                    id?: T;
+                  };
+              layout?: T;
+              mediaTypeSecondary?: T;
+              mediaSecondary?: T;
               split?: T;
-              reverse?: T;
               eyebrowRule?: T;
               align?: T;
               ratio?: T;
@@ -2086,6 +2447,7 @@ export interface AccommodationsSelect<T extends boolean = true> {
                   };
               titleAccent?: T;
               background?: T;
+              headingLevel?: T;
               slotId?: T;
               id?: T;
               blockName?: T;
@@ -2096,10 +2458,13 @@ export interface AccommodationsSelect<T extends boolean = true> {
               title?: T;
               subtitle?: T;
               headingTone?: T;
+              headingLevel?: T;
               columns?: T;
               variant?: T;
+              iconStyle?: T;
               description?: T;
               background?: T;
+              headingAlign?: T;
               ctas?:
                 | T
                 | {
@@ -2127,8 +2492,10 @@ export interface AccommodationsSelect<T extends boolean = true> {
               title?: T;
               subtitle?: T;
               headingTone?: T;
+              headingLevel?: T;
               description?: T;
               background?: T;
+              headingAlign?: T;
               card?: T;
               cardSize?: T;
               columns?: T;
@@ -2148,6 +2515,7 @@ export interface AccommodationsSelect<T extends boolean = true> {
                     title?: T;
                     subtitle?: T;
                     tag?: T;
+                    icon?: T;
                     url?: T;
                     date?: T;
                     readMoreLabel?: T;
@@ -2171,9 +2539,11 @@ export interface AccommodationsSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
+              headingLevel?: T;
               headingTone?: T;
               description?: T;
               background?: T;
+              headingAlign?: T;
               source?: T;
               category?: T;
               limit?: T;
@@ -2190,6 +2560,7 @@ export interface AccommodationsSelect<T extends boolean = true> {
               title?: T;
               description?: T;
               background?: T;
+              headingAlign?: T;
               variant?: T;
               images?:
                 | T
@@ -2227,6 +2598,7 @@ export interface AccommodationsSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
+              headingLevel?: T;
               headingTone?: T;
               background?: T;
               showAddress?: T;
@@ -2247,6 +2619,7 @@ export interface AccommodationsSelect<T extends boolean = true> {
           | T
           | {
               content?: T;
+              headingLevel?: T;
               id?: T;
               blockName?: T;
             };
@@ -2264,6 +2637,9 @@ export interface AccommodationsSelect<T extends boolean = true> {
                     icon?: T;
                     id?: T;
                   };
+              background?: T;
+              backgroundImage?: T;
+              headingLevel?: T;
               id?: T;
               blockName?: T;
             };
@@ -2378,6 +2754,36 @@ export interface PagesSelect<T extends boolean = true> {
         titleMode?: T;
         align?: T;
         showBreadcrumbs?: T;
+        height?: T;
+        showAsHeading?: T;
+        cta?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              variant?: T;
+              icon?: T;
+              id?: T;
+            };
+        mediaSlides?: T;
+        slides?:
+          | T
+          | {
+              media?: T;
+              eyebrow?: T;
+              title?: T;
+              subtitle?: T;
+              cta?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                    variant?: T;
+                    icon?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
       };
   blocks?:
     | T
@@ -2392,8 +2798,20 @@ export interface PagesSelect<T extends boolean = true> {
               image?: T;
               images?: T;
               embedUrl?: T;
+              mediaCards?:
+                | T
+                | {
+                    title?: T;
+                    subtitle?: T;
+                    icon?: T;
+                    image?: T;
+                    url?: T;
+                    id?: T;
+                  };
+              layout?: T;
+              mediaTypeSecondary?: T;
+              mediaSecondary?: T;
               split?: T;
-              reverse?: T;
               eyebrowRule?: T;
               align?: T;
               ratio?: T;
@@ -2408,6 +2826,7 @@ export interface PagesSelect<T extends boolean = true> {
                   };
               titleAccent?: T;
               background?: T;
+              headingLevel?: T;
               slotId?: T;
               id?: T;
               blockName?: T;
@@ -2418,10 +2837,13 @@ export interface PagesSelect<T extends boolean = true> {
               title?: T;
               subtitle?: T;
               headingTone?: T;
+              headingLevel?: T;
               columns?: T;
               variant?: T;
+              iconStyle?: T;
               description?: T;
               background?: T;
+              headingAlign?: T;
               ctas?:
                 | T
                 | {
@@ -2449,8 +2871,10 @@ export interface PagesSelect<T extends boolean = true> {
               title?: T;
               subtitle?: T;
               headingTone?: T;
+              headingLevel?: T;
               description?: T;
               background?: T;
+              headingAlign?: T;
               card?: T;
               cardSize?: T;
               columns?: T;
@@ -2470,6 +2894,7 @@ export interface PagesSelect<T extends boolean = true> {
                     title?: T;
                     subtitle?: T;
                     tag?: T;
+                    icon?: T;
                     url?: T;
                     date?: T;
                     readMoreLabel?: T;
@@ -2493,9 +2918,11 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
+              headingLevel?: T;
               headingTone?: T;
               description?: T;
               background?: T;
+              headingAlign?: T;
               source?: T;
               category?: T;
               limit?: T;
@@ -2512,6 +2939,7 @@ export interface PagesSelect<T extends boolean = true> {
               title?: T;
               description?: T;
               background?: T;
+              headingAlign?: T;
               variant?: T;
               images?:
                 | T
@@ -2549,6 +2977,7 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
+              headingLevel?: T;
               headingTone?: T;
               background?: T;
               showAddress?: T;
@@ -2569,6 +2998,7 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               content?: T;
+              headingLevel?: T;
               id?: T;
               blockName?: T;
             };
@@ -2586,6 +3016,9 @@ export interface PagesSelect<T extends boolean = true> {
                     icon?: T;
                     id?: T;
                   };
+              background?: T;
+              backgroundImage?: T;
+              headingLevel?: T;
               id?: T;
               blockName?: T;
             };
@@ -2743,17 +3176,20 @@ export interface SiteConfig {
   indexing: 'noindex' | 'index';
   general: {
     siteName: string;
-    siteDescription: string;
-    logo: number | Media;
+    siteDescription?: string | null;
     /**
-     * Versión para fondos oscuros.
+     * Sin logo, se muestra el nombre del site como texto.
      */
-    logoInverted: number | Media;
+    logo?: (number | null) | Media;
+    /**
+     * Versión para fondos oscuros. Opcional.
+     */
+    logoInverted?: (number | null) | Media;
     /**
      * Clasificación. Opcional.
      */
     stars?: number | null;
-    openingDates: string;
+    openingDates?: string | null;
     /**
      * Tipo de negocio. Decide el tipo del JSON-LD del negocio.
      */
@@ -2761,15 +3197,15 @@ export interface SiteConfig {
   };
   contact: {
     address: string;
-    postalCode: string;
+    postalCode?: string | null;
     city: string;
-    country: string;
+    country?: string | null;
     phone: string;
     email: string;
   };
-  location: {
-    latitude: number;
-    longitude: number;
+  location?: {
+    latitude?: number | null;
+    longitude?: number | null;
     transport?:
       | {
           icon: 'car' | 'train' | 'plane';
@@ -2923,7 +3359,7 @@ export interface SiteConfig {
  */
 export interface Header {
   id: number;
-  topBar: {
+  topBar?: {
     links?:
       | {
           label: string;
@@ -2933,7 +3369,20 @@ export interface Header {
         }[]
       | null;
     showLogin?: boolean | null;
-    bookingButtonLabel: string;
+    /**
+     * Opcional. Hacen falta el texto y la URL: si falta alguno, el botón no se pinta en la barra, el menú móvil ni el widget inferior.
+     */
+    bookingButton?: {
+      label?: string | null;
+      /**
+       * Ej: /reserver o la URL del motor.
+       */
+      url?: string | null;
+      /**
+       * _blank abre en una pestaña nueva (motor externo).
+       */
+      target?: ('_self' | '_blank') | null;
+    };
   };
   navigation?:
     | {
@@ -3007,7 +3456,10 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
-  copyright: string;
+  /**
+   * Opcional. Sin él, el pie pone «© {año} {nombre del site}».
+   */
+  copyright?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3178,7 +3630,13 @@ export interface HeaderSelect<T extends boolean = true> {
               id?: T;
             };
         showLogin?: T;
-        bookingButtonLabel?: T;
+        bookingButton?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              target?: T;
+            };
       };
   navigation?:
     | T

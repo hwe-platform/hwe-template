@@ -1,4 +1,4 @@
-import { linkFields } from './partes';
+import { backgroundField, headingAlignField, linkFields } from './partes';
 
 import type { Block } from 'payload';
 
@@ -13,13 +13,8 @@ export const Gallery: Block = {
       localized: true,
       admin: { description: 'Párrafo de entrada entre el titular y la galería.' },
     },
-    {
-      name: 'background',
-      type: 'select',
-      defaultValue: 'default',
-      options: ['default', 'muted', 'none'],
-      admin: { description: 'Fondo de la sección. Las secciones suelen alternar.' },
-    },
+    backgroundField(),
+    headingAlignField(),
     {
       name: 'variant',
       type: 'select',
@@ -149,9 +144,11 @@ export const Gallery: Block = {
     {
       name: 'headingLevel',
       type: 'select',
-      defaultValue: '2',
       options: ['2', '3', '4'],
-      admin: { description: 'Nivel del titular en la jerarquía de la página. Nunca h1.' },
+      admin: {
+        description:
+          'Nivel del titular en la jerarquía de la página. Vacío, h2. Nunca h1: si la galería abre la página y el hero cede su h1, lo pone el renderer.',
+      },
     },
     { name: 'ctas', type: 'array', fields: linkFields },
   ],
