@@ -15,8 +15,9 @@ export type SiteLocale = Config['locale'];
  * enum) y los prefijos de URL que el middleware reconoce: **no** los idiomas
  * activos de un site, que son `site-config.languages.available`.
  *
- * `payload.config.ts` construye `localization.locales` a partir de esta lista,
- * así que es la única fuente. Añadir un idioma exige migración.
+ * `payload.config.ts` lleva la misma lista, literal (el importador de contenido la lee
+ * como texto), y `i18n.test.ts` comprueba que coinciden. Añadir un idioma exige
+ * migración.
  *
  * Duplicado a propósito y no leído de `site-config`: el middleware corre en el
  * edge y no puede abrir una conexión a Payload.
@@ -31,18 +32,6 @@ export const LOCALES = [
   'it',
   'pt',
 ] as const satisfies readonly SiteLocale[];
-
-/** Cómo se llama cada idioma en el selector del panel de Payload. */
-export const LOCALE_LABELS: Record<(typeof LOCALES)[number], string> = {
-  ca: 'Català',
-  es: 'Español',
-  fr: 'Français',
-  en: 'English',
-  de: 'Deutsch',
-  nl: 'Nederlands',
-  it: 'Italiano',
-  pt: 'Português',
-};
 
 /**
  * Idioma principal. Es el fallback de Payload cuando falta una traducción y el
