@@ -27,7 +27,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@hwe-platform/core-ui": "^0.6.1",
+    "@hwe-platform/core-ui": "file:../hwe-core/packages/core-ui",
     "@payloadcms/db-postgres": "3.88.0",
     "@payloadcms/email-nodemailer": "3.88.0",
     "@payloadcms/next": "3.88.0",
