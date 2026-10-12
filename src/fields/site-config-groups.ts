@@ -1,6 +1,6 @@
 import { BUSINESS_TYPES } from '@hwe-platform/core-ui';
 
-import { DEFAULT_LOCALE, isSiteLocale } from '../i18n';
+import { DEFAULT_LOCALE, LOCALES, isSiteLocale } from '../i18n';
 import { ADMIN_DECIMAL } from '../admin/decimal-field';
 
 import type { Field } from 'payload';
@@ -76,6 +76,18 @@ export const locationGroup: Field = {
 };
 
 /**
+ * Cada idioma activo tiene que ser uno de la plataforma (`LOCALES`). Sin esto, un
+ * código mal escrito (`FR`, `pt-BR`) se guardaba y el site lo ignoraba en silencio.
+ */
+export function validarIdiomasActivos(
+  activos: readonly string[] | null | undefined,
+): true | string {
+  const invalidos = (activos ?? []).filter((codigo) => !isSiteLocale(codigo));
+  if (invalidos.length === 0) return true;
+  return `No son idiomas de la plataforma: ${invalidos.join(', ')}. Valen: ${LOCALES.join(', ')}.`;
+}
+
+/**
  * El idioma principal tiene que estar entre los activos (V24): es el fallback de
  * Payload y el idioma sin prefijo, y un site no puede quedarse sin él.
  *
@@ -116,6 +128,8 @@ export const languagesGroup: Field = {
       hasMany: true,
       required: true,
       defaultValue: [DEFAULT_LOCALE],
+      validate: (value: string | string[] | null | undefined) =>
+        validarIdiomasActivos(Array.isArray(value) ? value : value ? [value] : []),
       admin: {
         description:
           'Idiomas que sirve el site. Códigos de la plataforma: ca, es, fr, en, de, nl, it, pt. Un idioma que no esté aquí da 404 y no sale en el sitemap.',

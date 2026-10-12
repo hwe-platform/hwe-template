@@ -194,7 +194,11 @@ function JsonLdScript({ graph }: { graph: JsonLdGraph | null }) {
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
-  const resolved = await findDocument(await params, await currentLocale());
+  const locale = await currentLocale();
+  // Un idioma inactivo da 404 en la página: no hace falta consultar el contenido.
+  if (!esIdiomaActivo(locale, await leerIdiomasActivos())) return {};
+
+  const resolved = await findDocument(await params, locale);
   if (!resolved) return {};
 
   const seo = resolved.doc.seo as

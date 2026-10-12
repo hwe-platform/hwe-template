@@ -62,20 +62,28 @@ async function entradasDeIdioma(
   indexing: string,
   locale: SiteLocale,
 ): Promise<Entrada[]> {
-  const entradas: Entrada[] = [];
-  for (const collection of COLECCIONES) {
-    for (const doc of await leerColeccion(collection, locale)) {
-      const [ruta] = sitemapPaths({ indexing, [collection]: [doc] });
-      if (ruta === undefined) continue;
-      const clave = doc.id === undefined ? null : `${collection}:${doc.id}`;
-      entradas.push({ locale, clave, url: urlDe(siteUrl, locale, ruta) });
-    }
-  }
-  return entradas;
+  const porColeccion = await Promise.all(
+    COLECCIONES.map(async (collection) => {
+      const entradas: Entrada[] = [];
+      for (const doc of await leerColeccion(collection, locale)) {
+        const [ruta] = sitemapPaths({ indexing, [collection]: [doc] });
+        if (ruta === undefined) continue;
+        const clave = doc.id === undefined ? null : `${collection}:${doc.id}`;
+        entradas.push({ locale, clave, url: urlDe(siteUrl, locale, ruta) });
+      }
+      return entradas;
+    }),
+  );
+  return porColeccion.flat();
 }
 
-/** Con más de un idioma activo, cada entrada lleva las alternativas de su documento. */
-function conAlternativas(entradas: Entrada[], hayVariosIdiomas: boolean): MetadataRoute.Sitemap {
+/**
+ * Cada entrada lleva las alternativas de su documento en los demás idiomas activos.
+ * Con un solo idioma activo cada documento tiene una única entrada y no hay nada
+ * que alternar. El orden es por URL, con una comparación que no depende de la
+ * configuración regional del proceso.
+ */
+function conAlternativas(entradas: Entrada[]): MetadataRoute.Sitemap {
   const porClave = new Map<string, Entrada[]>();
   for (const entrada of entradas) {
     if (entrada.clave === null) continue;
@@ -85,11 +93,11 @@ function conAlternativas(entradas: Entrada[], hayVariosIdiomas: boolean): Metada
   return entradas
     .map((entrada) => {
       const hermanas = entrada.clave === null ? [] : (porClave.get(entrada.clave) ?? []);
-      if (!hayVariosIdiomas || hermanas.length < 2) return { url: entrada.url };
+      if (hermanas.length < 2) return { url: entrada.url };
       const languages = Object.fromEntries(hermanas.map((h) => [h.locale, h.url]));
       return { url: entrada.url, alternates: { languages } };
     })
-    .sort((a, b) => a.url.localeCompare(b.url));
+    .sort((a, b) => (a.url < b.url ? -1 : a.url > b.url ? 1 : 0));
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -98,10 +106,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (!siteUrl || indexing !== 'index') return [];
 
   const idiomas = idiomasDelSitemap(await leerIdiomasActivos());
-  const entradas: Entrada[] = [];
-  for (const locale of idiomas) {
-    entradas.push(...(await entradasDeIdioma(siteUrl, indexing, locale)));
-  }
+  const porIdioma = await Promise.all(
+    idiomas.map((locale) => entradasDeIdioma(siteUrl, indexing, locale)),
+  );
 
-  return conAlternativas(entradas, idiomas.length > 1);
+  return conAlternativas(porIdioma.flat());
 }
