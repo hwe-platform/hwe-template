@@ -1,0 +1,29 @@
+#!/bin/sh
+# HWE: impide empujar commits cuyas dependencias apunten a un core-ui local.
+#
+# Revisa cada commit nuevo del push, no solo el último. Las ramas `wip/*` quedan
+# fuera: son copias de seguridad del trabajo en curso.
+. "$(dirname "$0")/patron-file.sh"
+
+cero=0000000000000000000000000000000000000000
+while read -r _ref_local sha_local ref_remota sha_remota; do
+  [ "$sha_local" = "$cero" ] && continue
+  case "$ref_remota" in refs/heads/wip/*) continue ;; esac
+  if [ "$sha_remota" = "$cero" ]; then
+    # Lo que ya está en una rama remota cuenta como revisado, salvo wip/*:
+    # un commit malo guardado en wip/ no puede colarse después en otra rama.
+    commits=$(git rev-list "$sha_local" --not --exclude="*/wip/*" --remotes)
+  else
+    commits=$(git rev-list "$sha_remota..$sha_local")
+  fi
+  for c in $commits; do
+    for f in $FICHEROS_FILE; do
+      if git show "$c:$f" 2>/dev/null | grep -Eq "$PATRON_FILE"; then
+        echo "HWE pre-push: $ref_remota, commit $(git rev-parse --short "$c"): $f apunta a un core-ui local (file:/link:)." >&2
+        echo "  No se empuja. Si es una copia de seguridad, usa una rama wip/*." >&2
+        exit 1
+      fi
+    done
+  done
+done
+exit 0

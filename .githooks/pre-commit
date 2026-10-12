@@ -1,0 +1,17 @@
+#!/bin/sh
+# HWE: impide comitear un core-ui local en las dependencias.
+#
+# Se comprueba lo que va a entrar en el commit (el índice), no el árbol de trabajo.
+. "$(dirname "$0")/patron-file.sh"
+
+for f in $FICHEROS_FILE; do
+  linea=$(git show ":$f" 2>/dev/null | grep -nE "$PATRON_FILE" | head -n 1)
+  if [ -n "$linea" ]; then
+    echo "HWE pre-commit: $f apunta a un core-ui local (file:/link:)." >&2
+    echo "  Línea $linea" >&2
+    echo "  No se comitea. Vuelve a la versión del registro en el índice:" >&2
+    echo "    git restore --staged --source=HEAD -- $f" >&2
+    exit 1
+  fi
+done
+exit 0
