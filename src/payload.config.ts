@@ -14,6 +14,7 @@ import { Entities } from './collections/Entities';
 import { Pages } from './collections/Pages';
 import { ContactSubmissions } from './collections/ContactSubmissions';
 import { emailAdapter } from './email';
+import { DEFAULT_LOCALE, LOCALES, LOCALE_LABELS } from './i18n';
 import { storagePlugins } from './storage';
 import { SiteConfig } from './globals/SiteConfig';
 import { Header } from './globals/Header';
@@ -61,16 +62,13 @@ export default buildConfig({
   plugins: storagePlugins(),
   // Localización por campo, no por documento: un alojamiento es UN documento
   // con los campos de texto traducidos (specs/payload/localizacion.md).
-  // Tres idiomas de partida; cada cliente configura los suyos, los mantiene a
-  // la par con `LOCALES` en i18n.ts y con site-config.languages.available, y
-  // genera la migration correspondiente (los locales son un enum de Postgres).
+  // Los 8 idiomas de la plataforma, a partir de `LOCALES` (i18n.ts), que es la
+  // única fuente. Es lo que Postgres acepta como locale (un enum): los idiomas
+  // que sirve cada site son `site-config.languages.available`, y nunca se quita
+  // un locale de aquí por desactivarlo. Añadir un idioma exige migration.
   localization: {
-    locales: [
-      { label: 'Français', code: 'fr' },
-      { label: 'English', code: 'en' },
-      { label: 'Español', code: 'es' },
-    ],
-    defaultLocale: 'fr',
+    locales: LOCALES.map((code) => ({ label: LOCALE_LABELS[code], code })),
+    defaultLocale: DEFAULT_LOCALE,
     // Un visitante inglés ve el texto en francés antes que un hueco vacío.
     fallback: true,
   },

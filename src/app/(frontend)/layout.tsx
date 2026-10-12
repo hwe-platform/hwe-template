@@ -7,6 +7,7 @@ import type React from 'react';
 import config from '../../payload.config';
 import { DEFAULT_LOCALE, LOCALE_HEADER, isSiteLocale } from '../../i18n';
 import { leerIndexacion } from '../../services/seo/indexacion';
+import { esIdiomaActivo, leerIdiomasActivos } from '../../services/seo/idiomas';
 
 import '../../styles/globals.css';
 
@@ -76,7 +77,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: Args) {
-  const locale = await currentLocale();
+  // Un idioma inactivo da 404 en la página, y ese 404 se pinta en el principal:
+  // el marco no puede ofrecer ni enlazar un idioma que el site no sirve.
+  const pedido = await currentLocale();
+  const locale = esIdiomaActivo(pedido, await leerIdiomasActivos()) ? pedido : DEFAULT_LOCALE;
   const globals = await loadGlobals(locale);
 
   return (

@@ -1,6 +1,6 @@
 import { BUSINESS_TYPES } from '@hwe-platform/core-ui';
 
-import { DEFAULT_LOCALE, LOCALES } from '../i18n';
+import { DEFAULT_LOCALE, isSiteLocale } from '../i18n';
 import { ADMIN_DECIMAL } from '../admin/decimal-field';
 
 import type { Field } from 'payload';
@@ -76,13 +76,34 @@ export const locationGroup: Field = {
 };
 
 /**
- * Idiomas del site. Debe mantenerse en sincronía con `localization.locales`
- * del payload.config — este grupo es lo que lee el middleware de Next.js para
- * decidir prefijos y dominios (ver hwe-tools/docs/arquitectura/paginas-routing.md).
+ * El idioma principal tiene que estar entre los activos (V24): es el fallback de
+ * Payload y el idioma sin prefijo, y un site no puede quedarse sin él.
  *
- * Los valores por defecto salen de `i18n.ts`: un site recién creado arranca con
- * sus idiomas ya puestos en vez de un campo vacío que el editor tendría que
- * rellenar a mano, código a código.
+ * Sin la lista de activos no se puede comprobar y no se bloquea el guardado.
+ */
+export function validarPrincipalActivo(
+  principal: string | null | undefined,
+  activos: readonly string[] | null | undefined,
+): true | string {
+  if (!activos) return true;
+  if (!isSiteLocale(principal)) {
+    return 'El idioma principal tiene que ser uno de la plataforma: ca, es, fr, en, de, nl, it, pt.';
+  }
+  if (!activos.includes(principal)) {
+    return `El idioma principal (${principal}) tiene que estar entre los idiomas activos.`;
+  }
+  return true;
+}
+
+/**
+ * Idiomas del site: los que sirve (`available`) y el principal (`default`). No son
+ * `localization.locales` del payload.config, que es lo que la BD puede guardar:
+ * un idioma desactivado aquí sigue existiendo allí (ver
+ * hwe-tools/docs/arquitectura/paginas-routing.md y specs/payload/localizacion.md).
+ *
+ * Un site nuevo nace con solo el idioma principal activo (`DEFAULT_LOCALE`): con
+ * ocho idiomas en la plataforma, activarlos todos por defecto crearía siete
+ * idiomas vacíos. El editor activa los que traduzca.
  */
 export const languagesGroup: Field = {
   name: 'languages',
@@ -94,10 +115,24 @@ export const languagesGroup: Field = {
       type: 'text',
       hasMany: true,
       required: true,
-      defaultValue: [...LOCALES],
-      admin: { description: 'Códigos de idioma: fr, en, es.' },
+      defaultValue: [DEFAULT_LOCALE],
+      admin: {
+        description:
+          'Idiomas que sirve el site. Códigos de la plataforma: ca, es, fr, en, de, nl, it, pt. Un idioma que no esté aquí da 404 y no sale en el sitemap.',
+      },
     },
-    { name: 'default', type: 'text', required: true, defaultValue: DEFAULT_LOCALE },
+    {
+      name: 'default',
+      type: 'text',
+      required: true,
+      defaultValue: DEFAULT_LOCALE,
+      admin: { description: 'Idioma principal. Tiene que estar entre los activos.' },
+      validate: (value: string | null | undefined, { siblingData }: { siblingData?: unknown }) =>
+        validarPrincipalActivo(
+          value,
+          (siblingData as { available?: string[] | null } | undefined)?.available,
+        ),
+    },
     {
       name: 'prefixDefault',
       type: 'checkbox',

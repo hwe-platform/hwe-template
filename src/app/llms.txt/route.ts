@@ -3,7 +3,7 @@ import { getPayload } from 'payload';
 import { isSiteIndexable } from '@hwe-platform/core-ui';
 
 import config from '../../payload.config';
-import { DEFAULT_LOCALE, LOCALES, PREFIX_DEFAULT_LOCALE, isSiteLocale } from '../../i18n';
+import { DEFAULT_LOCALE, PREFIX_DEFAULT_LOCALE, isSiteLocale } from '../../i18n';
 import { LLMS_TXT_TAG } from '../../hooks/revalidate';
 
 import type { Accommodation, Page, SiteConfig } from '../../payload-types';
@@ -39,23 +39,32 @@ type Textos = {
   unpublished: string;
 };
 
-/** Los rótulos del fichero, en cada idioma que admite el site. */
-const TEXTOS: Record<SiteLocale, Textos> = {
-  fr: {
-    pages: 'Pages',
-    accommodations: 'Hébergements',
-    booking: 'Réservation',
-    bookingNote: "Réservation en ligne disponible sur chaque page d'hébergement.",
-    engine: 'Moteur',
-    languages: 'Langues',
-    main: 'principal',
-    contact: 'Contact',
-    address: 'Adresse',
-    phone: 'Téléphone',
-    email: 'Email',
-    persons: 'pers.',
-    unpublished: "Ce site n'est pas encore publié.",
-  },
+/**
+ * Los rótulos del fichero en el idioma principal del site (hoy francés). Es lo que se
+ * usa cuando un idioma no tiene traducción de estos textos.
+ */
+const TEXTOS_PRINCIPAL: Textos = {
+  pages: 'Pages',
+  accommodations: 'Hébergements',
+  booking: 'Réservation',
+  bookingNote: "Réservation en ligne disponible sur chaque page d'hébergement.",
+  engine: 'Moteur',
+  languages: 'Langues',
+  main: 'principal',
+  contact: 'Contact',
+  address: 'Adresse',
+  phone: 'Téléphone',
+  email: 'Email',
+  persons: 'pers.',
+  unpublished: "Ce site n'est pas encore publié.",
+};
+
+/**
+ * Rótulos traducidos por idioma. Un idioma de la plataforma que no figure aquí cae en
+ * los del principal: no se inventan traducciones (regla 1), se añaden cuando existan.
+ */
+const TEXTOS: Partial<Record<SiteLocale, Textos>> = {
+  fr: TEXTOS_PRINCIPAL,
   en: {
     pages: 'Pages',
     accommodations: 'Accommodations',
@@ -115,16 +124,21 @@ async function leerContenido(): Promise<Contenido> {
   return { siteConfig, pages: pages.docs, accommodations: accommodations.docs };
 }
 
+/** Los rótulos de un idioma, o los del principal si ese idioma no tiene traducción. */
+function textosDe(locale: SiteLocale): Textos {
+  return TEXTOS[locale] ?? TEXTOS_PRINCIPAL;
+}
+
 /** El nombre de un idioma escrito en el idioma principal: «Français», no «fr». */
 function nombreDeIdioma(locale: SiteLocale): string {
   const nombre = new Intl.DisplayNames(DEFAULT_LOCALE, { type: 'language' }).of(locale) ?? locale;
   return nombre.charAt(0).toLocaleUpperCase(DEFAULT_LOCALE) + nombre.slice(1);
 }
 
-/** Los idiomas del site con el principal primero. Sin dato en site-config, los del código. */
+/** Los idiomas del site con el principal primero. Sin dato en site-config, solo el principal. */
 function idiomasDelSite(siteConfig: Partial<SiteConfig>): SiteLocale[] {
   const declarados = (siteConfig.languages?.available ?? []).filter(isSiteLocale);
-  const idiomas = declarados.length > 0 ? declarados : [...LOCALES];
+  const idiomas = declarados.length > 0 ? declarados : [DEFAULT_LOCALE];
   return [DEFAULT_LOCALE, ...idiomas.filter((locale) => locale !== DEFAULT_LOCALE)];
 }
 
@@ -221,7 +235,7 @@ function contacto({ contact }: Partial<SiteConfig>, { textos }: Contexto): strin
 function construir({ siteConfig, pages, accommodations }: Contenido): string {
   if (!isSiteIndexable(siteConfig.indexing)) {
     const nombre = siteConfig.general?.siteName;
-    return [nombre && `# ${nombre}`, `> ${TEXTOS[DEFAULT_LOCALE].unpublished}`]
+    return [nombre && `# ${nombre}`, `> ${textosDe(DEFAULT_LOCALE).unpublished}`]
       .filter(Boolean)
       .join('\n')
       .concat('\n');
@@ -232,7 +246,7 @@ function construir({ siteConfig, pages, accommodations }: Contenido): string {
     `${base}${locale !== DEFAULT_LOCALE || PREFIX_DEFAULT_LOCALE ? `/${locale}` : ''}` || '/';
   const raiz = urlDeIdioma(DEFAULT_LOCALE);
   const contexto: Contexto = {
-    textos: TEXTOS[DEFAULT_LOCALE],
+    textos: textosDe(DEFAULT_LOCALE),
     urlDe: (ruta) => (ruta === '/' ? raiz : `${raiz === '/' ? '' : raiz}${ruta}`),
     urlDeIdioma,
   };

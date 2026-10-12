@@ -138,18 +138,11 @@ describe('llms.txt: lo que falta', () => {
     expect(await llmsTxt()).not.toContain('## Langues');
   });
 
-  it('sin datos no inventa: omite lo que falta y no queda vacío', async () => {
+  it('sin datos no inventa: omite lo que falta, también los idiomas que el site no declara', async () => {
     findGlobal.mockResolvedValue({ indexing: 'index' });
     find.mockImplementation(async () => ({ docs: [] }));
-    expect(await llmsTxt()).toBe(
-      [
-        '## Langues',
-        '- Français (principal): https://demo.test',
-        '- Anglais: https://demo.test/en',
-        '- Espagnol: https://demo.test/es',
-        '',
-      ].join('\n'),
-    );
+    // Sin `languages.available` solo cuenta el principal, y con uno solo no hay sección.
+    expect(await llmsTxt()).toBe('\n');
   });
 
   it('site cerrado: solo el nombre y que no está publicado, sea cual sea el contenido', async () => {

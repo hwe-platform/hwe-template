@@ -11,6 +11,7 @@ import { DEFAULT_LOCALE, LOCALE_HEADER, PREFIX_DEFAULT_LOCALE, isSiteLocale } fr
 import { buildPageJsonLd, serializeJsonLd } from '../../../services/json-ld';
 import { buscarDocumento } from '../../../services/routing/buscar-documento';
 import { leerIndexacion } from '../../../services/seo/indexacion';
+import { esIdiomaActivo, leerIdiomasActivos } from '../../../services/seo/idiomas';
 
 import type { ComponentType } from 'react';
 import type { Breadcrumb, RoutableCollection } from '@hwe-platform/core-ui';
@@ -216,6 +217,10 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
  */
 export default async function CatchAllPage({ params }: Args) {
   const locale = await currentLocale();
+  // Un idioma que no está en `site-config.languages.available` no se sirve (V24).
+  // Se decide aquí y no en el middleware, que corre en el edge y no lee Payload.
+  if (!esIdiomaActivo(locale, await leerIdiomasActivos())) notFound();
+
   const route = await params;
   const resolved = await findDocument(route, locale);
   if (!resolved) notFound();
